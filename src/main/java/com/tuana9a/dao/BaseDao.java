@@ -1,6 +1,7 @@
 package com.tuana9a.dao;
 
-import com.tuana9a.utility.Utility;
+import com.tuana9a.factory.DatabaseConnectionFactory;
+import com.tuana9a.utils.Utils;
 
 import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
@@ -9,18 +10,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class BasicDAO<T> {
+public abstract class BaseDao<T> {
     protected String table;
     protected Class<T> type;
 
-    public BasicDAO(String table, Class<T> type) {
+    public BaseDao(String table, Class<T> type) {
         this.table = table;
         this.type = type;
     }
 
 
     protected PreparedStatement prepare(String sql) throws SQLException {
-        return DatabaseConnection.connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+        return DatabaseConnectionFactory.connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
     }
 
     protected T getObject(ResultSet rs) {
@@ -29,7 +30,7 @@ public abstract class BasicDAO<T> {
             T object = (T) type.newInstance();
             for (Field f : fields) {
                 f.setAccessible(true);
-                f.set(object, rs.getObject(Utility.camelToSnake(f.getName())));
+                f.set(object, rs.getObject(Utils.getInstance().camelToSnake(f.getName())));
             }
             return object;
         } catch (Exception e) {
@@ -51,7 +52,7 @@ public abstract class BasicDAO<T> {
     }
 
     //find by id
-    public T findById(int id) throws SQLException {
+    public T findById(Integer id) throws SQLException {
         String sql = "SELECT * FROM " + table + " WHERE id = ? AND deleted = false";
         PreparedStatement prepared = prepare(sql);
         prepared.setInt(1, id);
@@ -76,10 +77,10 @@ public abstract class BasicDAO<T> {
         return getObject(rs);
     }
 
-    //TODO sortBy(String field, boolean asc)
-    //TODO findByParent(String parent, int parentId)
-    
-    //insert
+//    public abstract sortBy(String field, boolean asc);
+
+//    public abstract findByParent(String parent, int parentId);
+
     public T insert(T object) throws SQLException {
         PreparedStatement prepared;
         Field[] fields = type.getDeclaredFields();
@@ -88,7 +89,7 @@ public abstract class BasicDAO<T> {
         StringBuilder sql = new StringBuilder("INSERT INTO " + table + "(");
         for (int i = 1; i < fieldNumber; i++) {
             Field f = fields[i];
-            sql.append(Utility.camelToSnake(f.getName())).append(i != fieldNumber - 1 ? "," : ") VALUES(");
+            sql.append(Utils.getInstance().camelToSnake(f.getName())).append(i != fieldNumber - 1 ? "," : ") VALUES(");
         }
         for (int i = 1; i < fieldNumber; i++) {
             Field f = fields[i];
@@ -119,7 +120,6 @@ public abstract class BasicDAO<T> {
         }
     }
 
-    //update
     public boolean update(T object) throws SQLException {
         PreparedStatement prepared;
         Field[] fields = type.getDeclaredFields();
@@ -128,9 +128,9 @@ public abstract class BasicDAO<T> {
         StringBuilder sql = new StringBuilder("UPDATE " + table + " SET ");
         for (int i = 1; i < fieldNumber; i++) {
             Field f = fields[i];
-            sql.append(Utility.camelToSnake(f.getName())).append(i != fieldNumber - 1 ? " = ?, " : " = ? ");
+            sql.append(Utils.getInstance().camelToSnake(f.getName())).append(i != fieldNumber - 1 ? " = ?, " : " = ? ");
         }
-        sql.append(" WHERE ").append(Utility.camelToSnake(fields[0].getName())).append(" = ?");//id field
+        sql.append(" WHERE ").append(Utils.getInstance().camelToSnake(fields[0].getName())).append(" = ?");//id field
 
         prepared = prepare(String.valueOf(sql));
         try {
@@ -151,8 +151,7 @@ public abstract class BasicDAO<T> {
         return count == 1;
     }
 
-    //delete
-    public boolean delete(int id) throws SQLException {
+    public boolean delete(Integer id) throws SQLException {
         String sql = "DELETE FROM " + table + " WHERE id = ? LIMIT 1";
         PreparedStatement prepared = prepare(sql);
         prepared.setInt(1, id);

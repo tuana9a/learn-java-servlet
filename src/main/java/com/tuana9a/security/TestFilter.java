@@ -1,11 +1,12 @@
-package com.tuana9a.filter;
+package com.tuana9a.security;
+
+import com.tuana9a.utils.LogUtils;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-@WebFilter("/cac")
+@WebFilter("/*")
 public class TestFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -14,8 +15,8 @@ public class TestFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        System.out.println( "filter : " + servletRequest.getParameter("test"));
-        filterChain.doFilter(servletRequest,servletResponse);
+        LogUtils.getInstance().LOGGER.info("test filter success");
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     @Override
