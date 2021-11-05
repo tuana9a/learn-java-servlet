@@ -2,9 +2,8 @@ package com.tuana9a.servlets;
 
 import com.google.gson.JsonObject;
 import com.tuana9a.config.AppConfig;
-import com.tuana9a.security.AdminService;
-import com.tuana9a.utils.JwtUtils;
 import com.tuana9a.services.GoogleService;
+import com.tuana9a.utils.JwtUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -30,7 +29,7 @@ public class GoogleLoginCallbackServlet extends HttpServlet {
         } catch (Exception ignored) {
         }
 
-        if (!AdminService.getInstance().isAdmin(username)) {
+        if (!AppConfig.getInstance().SECRETS.contains(username)) {
             resp.sendRedirect("/?login_success=false");
             return;
         }

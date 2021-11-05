@@ -2,8 +2,7 @@ package com.tuana9a.services;
 
 import com.google.gson.JsonObject;
 import com.tuana9a.config.AppConfig;
-import com.tuana9a.common.HttpRequestOption;
-import com.tuana9a.common.HttpClientService;
+import com.tuana9a.models.HttpRequestOption;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 

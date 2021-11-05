@@ -1,6 +1,7 @@
-package com.tuana9a.common;
+package com.tuana9a.services;
 
 import com.google.gson.JsonObject;
+import com.tuana9a.models.HttpRequestOption;
 import com.tuana9a.utils.IoUtils;
 import com.tuana9a.utils.JsonUtils;
 import com.tuana9a.utils.LogUtils;

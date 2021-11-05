@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @WebFilter(urlPatterns = {"/api/admin/*"})
-public class JwtFilter implements Filter {
+public class CookieJwtTokenFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -26,7 +26,7 @@ public class JwtFilter implements Filter {
                 if (cookie.getName().equalsIgnoreCase("Token")) {
                     String jwtToken = cookie.getValue();
                     String secret = JwtUtils.getInstance().decodeToken(jwtToken);
-                    if (AdminService.getInstance().isAdmin(secret)) {
+                    if (AppConfig.getInstance().SECRETS.contains(secret)) {
                         chain.doFilter(request, response);
                         return;
                     }

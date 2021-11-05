@@ -44,7 +44,7 @@ public class AppConfig {
         Properties properties = new Properties();
         InputStream inputStream = null;
         try {
-            inputStream = new FileInputStream("resource/app-config.properties");
+            inputStream = new FileInputStream("resource/app.conf.properties");
             properties.load(inputStream);
 
             OAUTH_GOOGLE_AUTH_URL = properties.getProperty("oauth.google.auth_url");

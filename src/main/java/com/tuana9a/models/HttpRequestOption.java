@@ -1,4 +1,4 @@
-package com.tuana9a.common;
+package com.tuana9a.models;
 
 import com.google.gson.JsonObject;
 import lombok.AllArgsConstructor;
