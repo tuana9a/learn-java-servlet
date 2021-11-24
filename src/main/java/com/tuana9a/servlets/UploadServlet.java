@@ -1,7 +1,7 @@
 package com.tuana9a.servlets;
 
 import com.tuana9a.models.ResponseEntity;
-import com.tuana9a.servlets.context.ServletContextManager;
+import com.tuana9a.context.ServletContextManager;
 import com.tuana9a.utils.IoUtils;
 import com.tuana9a.utils.JsonUtils;
 

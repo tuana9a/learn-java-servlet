@@ -1,5 +1,7 @@
 package com.tuana9a.utils;
 
+import com.tuana9a.config.AppConfig;
+
 import java.io.*;
 
 public class IoUtils {
@@ -14,8 +16,9 @@ public class IoUtils {
     }
 
     //SECTION: general purpose
-    public static void writeFileToOutput(RandomAccessFile input, OutputStream output, long start, long length) throws IOException {
-        byte[] buffer = new byte[1024];
+    public void writeFileToOutput(RandomAccessFile input, OutputStream output, long start, long length) throws IOException {
+        AppConfig config = AppConfig.getInstance();
+        byte[] buffer = new byte[config.BUFFER_SIZE];
         int read; //da doc duoc bao nhieu
 
         if (input.length() == length) {
@@ -39,7 +42,7 @@ public class IoUtils {
         }
     }
 
-    public static void writeFileToOutput(RandomAccessFile input, OutputStream output) throws IOException {
+    public void writeFileToOutput(RandomAccessFile input, OutputStream output) throws IOException {
         writeFileToOutput(input, output, 0, input.length());
     }
 

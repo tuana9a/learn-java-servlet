@@ -24,4 +24,10 @@ public class Utils {
         String replacement = "$1_$2";
         return input.replaceAll(regex, replacement).toLowerCase();
     }
+
+    public long getLongFromString(String input, int begin, int end) {
+        String substring = input.substring(begin, end);
+        return (substring.length() > 0) ? Long.parseLong(substring) : -1;
+    }
+
 }

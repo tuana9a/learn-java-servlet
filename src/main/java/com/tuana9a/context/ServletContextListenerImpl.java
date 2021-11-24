@@ -1,4 +1,4 @@
-package com.tuana9a.servlets.context;
+package com.tuana9a.context;
 
 import com.tuana9a.config.AppConfig;
 

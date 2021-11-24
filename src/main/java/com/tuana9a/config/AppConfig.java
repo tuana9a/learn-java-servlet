@@ -19,14 +19,16 @@ public class AppConfig {
     public String OAUTH_GOOGLE_REDIRECT_URL;
 
     public String PATH_RESOURCE_DIR;
-    public String PATH_WEB_INF_DIR;
-    public String PATH_WEBAPP_DIR;
-    public String PATH_WEBAPP_ZIP;
 
     public String SECURITY_JWT_SECRET;
     public String SECURITY_JWT_EXPIRE;
     public String SECURITY_COOKIE_EXPIRE;
     public String SECURITY_REJECT_MESSAGE;
+
+    public int BUFFER_SIZE = 1024;                 // 1KB
+    public long DEFAULT_EXPIRE_TIME = 604800000L;  // 1 weeks
+    public String MULTIPART_BOUNDARY = "MULTIPART_BYTERANGES";
+    public String ROOT_FOLDER;
 
     public Set<String> SECRETS;
 
@@ -54,8 +56,7 @@ public class AppConfig {
             OAUTH_GOOGLE_GET_USER_INFO_URL = properties.getProperty("oauth.google.get_user_info_url");
             OAUTH_GOOGLE_REDIRECT_URL = properties.getProperty("oauth.google.redirect_url");
 
-            PATH_RESOURCE_DIR = properties.getProperty("path.resource_dir");
-            PATH_WEB_INF_DIR = properties.getProperty("path.web-inf_dir");
+            PATH_RESOURCE_DIR = properties.getProperty("path.resource.dir");
 
             SECURITY_JWT_SECRET = properties.getProperty("security.jwt.secret");
             SECURITY_JWT_EXPIRE = properties.getProperty("security.jwt.expire");
@@ -63,6 +64,8 @@ public class AppConfig {
             SECURITY_REJECT_MESSAGE = properties.getProperty("security.reject_message");
 
             SECRETS = Arrays.stream(properties.getProperty("security.admins").split(",")).collect(Collectors.toSet());
+
+            ROOT_FOLDER = properties.getProperty("path.upload.dir");
 
         } catch (Exception e) {
             LogUtils.getInstance().LOGGER.error("Failed to load app-config.json", e);
