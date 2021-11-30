@@ -19,12 +19,7 @@ public class ServletContextManager {
         this.context = context;
     }
 
-    public File getRealFile(String servletPath) {
-        return new File(context.getRealPath(servletPath));
+    public ServletContext getContext() {
+        return context;
     }
-
-    public String getRealPath(String servletPath) {
-        return context.getRealPath(servletPath);
-    }
-
 }

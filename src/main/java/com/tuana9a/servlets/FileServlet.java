@@ -23,8 +23,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
-@WebServlet(urlPatterns = {"/explorer/*", "/explorer"})
-@MultipartConfig
+@WebServlet(urlPatterns = {"/explorer/*", "/explorer/"})
+@MultipartConfig(maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 5 * 5) // 5mb || 5 * 5mb
 public class FileServlet extends HttpServlet {
 
     @Override
@@ -41,11 +41,6 @@ public class FileServlet extends HttpServlet {
             return;
         }
 
-        if (pathRequest.equals("/explorer")) {
-            resp.sendRedirect("/explorer/");
-            return;
-        }
-
         // URL-decode the file name (might contain spaces and on) and prepare file object.
         File file = new File(config.ROOT_FOLDER, URLDecoder.decode(pathRequest, "UTF-8"));
 
@@ -57,9 +52,12 @@ public class FileServlet extends HttpServlet {
         }
 
         if (file.isDirectory()) {
-            getFolder(file, req, resp, pathRequest);
+            sendFolder(file, req, resp, pathRequest);
         } else if (file.isFile()) {
-            getFile(file, req, resp);
+            sendFile(file, req, resp);
+        } else {
+            // unknown what is this file
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
 
     }
@@ -112,9 +110,7 @@ public class FileServlet extends HttpServlet {
         resp.sendError(HttpServletResponse.SC_OK);
     }
 
-
-    //SECTION: handle file or folder
-    private void getFile(File file, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    private void sendFile(File file, HttpServletRequest req, HttpServletResponse resp) throws IOException {
         // Prepare some variables. The ETag is an unique identifier of the file.
         String fileName = file.getName();
         AppConfig config = AppConfig.getInstance();
@@ -323,8 +319,7 @@ public class FileServlet extends HttpServlet {
         }
     }
 
-    private void getFolder(File folder, HttpServletRequest req, HttpServletResponse resp, String path)
-            throws IOException {
+    private void sendFolder(File folder, HttpServletRequest req, HttpServletResponse resp, String path) throws IOException {
 
         resp.setContentType("application/json; charset=UTF-8");
 
@@ -335,7 +330,7 @@ public class FileServlet extends HttpServlet {
         if (files != null) {
             for (File file : files) {
                 String name = file.getName();
-                String url = "/resource/explorer" + (path.equals("/") ? "" : path) + "/" + name;
+                String url = "/explorer" + (path.equals("/") ? "" : path) + "/" + name;
                 list.add(WebFile.builder()
                         .name(name)
                         .url(url)

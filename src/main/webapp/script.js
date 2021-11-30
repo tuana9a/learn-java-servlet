@@ -102,4 +102,4 @@ function updateUrl(newUrl = "") {
     }
 }
 
-getFolder("/resource/explorer/").then().catch();
+getFolder("/explorer/").then().catch();
