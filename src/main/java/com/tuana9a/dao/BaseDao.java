@@ -1,6 +1,6 @@
 package com.tuana9a.dao;
 
-import com.tuana9a.factory.DatabaseConnectionFactory;
+import com.tuana9a.database.DatabaseClient;
 import com.tuana9a.utils.Utils;
 
 import java.lang.reflect.Field;
@@ -21,13 +21,15 @@ public abstract class BaseDao<T> {
 
 
     protected PreparedStatement prepare(String sql) throws SQLException {
-        return DatabaseConnectionFactory.connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+        return DatabaseClient.getInstance()
+                .getConnection()
+                .prepareStatement(sql, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
     }
 
     protected T getObject(ResultSet rs) {
         try {
             Field[] fields = type.getDeclaredFields();
-            T object = (T) type.newInstance();
+            T object = type.newInstance();
             for (Field f : fields) {
                 f.setAccessible(true);
                 f.set(object, rs.getObject(Utils.getInstance().camelToSnake(f.getName())));
@@ -51,7 +53,6 @@ public abstract class BaseDao<T> {
         return data;
     }
 
-    //find by id
     public T findById(Integer id) throws SQLException {
         String sql = "SELECT * FROM " + table + " WHERE id = ? AND deleted = false";
         PreparedStatement prepared = prepare(sql);
@@ -77,9 +78,9 @@ public abstract class BaseDao<T> {
         return getObject(rs);
     }
 
-//    public abstract sortBy(String field, boolean asc);
-
-//    public abstract findByParent(String parent, int parentId);
+    public List<T> sortBy(String field, boolean asc) {
+        return null;
+    }
 
     public T insert(T object) throws SQLException {
         PreparedStatement prepared;
