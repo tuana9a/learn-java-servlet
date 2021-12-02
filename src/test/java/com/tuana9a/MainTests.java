@@ -8,14 +8,9 @@ import org.junit.Test;
 public class MainTests {
 
     @Test
-    public void test0() {
+    public void test() {
         LogUtils.getInstance().LOGGER.info("Hello World!");
         System.out.println(JsonUtils.getInstance().toJson(AppConfig.getInstance()));
-        try {
-            throw new Exception("hello world");
-        } catch (Exception e) {
-            LogUtils.getInstance().LOGGER.error(e.getMessage(), e);
-        }
     }
 
 }
