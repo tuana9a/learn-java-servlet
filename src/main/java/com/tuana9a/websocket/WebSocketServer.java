@@ -25,7 +25,7 @@ public class WebSocketServer {
 
     @OnError
     public void onError(Session session, Throwable error) {
-        LogUtils.getInstance().LOGGER.error("WebSocketError: SessionId: " + session.getId(), error);
+        LogUtils.getLogger().error("WebSocketError: SessionId: " + session.getId(), error);
         WebSocketManager.getInstance().removeSession(session);
         IoUtils.getInstance().close(session);
     }

@@ -1,9 +1,9 @@
 package com.tuana9a.dao;
 
-public class SimpleUserDao {
-    private static final SimpleUserDao instance = new SimpleUserDao();
+public class BookDao {
+    private static final BookDao instance = new BookDao();
 
-    public static SimpleUserDao getInstance() {
+    public static BookDao getInstance() {
         return instance;
     }
 

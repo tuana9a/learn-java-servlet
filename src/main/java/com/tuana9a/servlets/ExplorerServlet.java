@@ -2,10 +2,8 @@ package com.tuana9a.servlets;
 
 import com.tuana9a.config.AppConfig;
 import com.tuana9a.models.Range;
-import com.tuana9a.models.WebFile;
 import com.tuana9a.utils.HttpUtils;
 import com.tuana9a.utils.IoUtils;
-import com.tuana9a.utils.JsonUtils;
 import com.tuana9a.utils.Utils;
 
 import javax.servlet.ServletException;
@@ -19,13 +17,12 @@ import javax.servlet.http.Part;
 import java.io.*;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
-@WebServlet(urlPatterns = {"/explorer/*", "/explorer/"})
+@WebServlet(urlPatterns = {"/explorer.exe/*"})
 @MultipartConfig(maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 5 * 5) // 5mb || 5 * 5mb
-public class FileServlet extends HttpServlet {
+public class ExplorerServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -42,7 +39,9 @@ public class FileServlet extends HttpServlet {
         }
 
         // URL-decode the file name (might contain spaces and on) and prepare file object.
-        File file = new File(config.ROOT_FOLDER, URLDecoder.decode(pathRequest, "UTF-8"));
+        String pathDecoded = URLDecoder.decode(pathRequest, "UTF-8");
+        // System.out.println(pathDecoded);
+        File file = new File(config.ROOT_FOLDER, pathDecoded);
 
         // Check if file actually exists in filesystem.
         if (!file.exists()) {
@@ -319,27 +318,26 @@ public class FileServlet extends HttpServlet {
         }
     }
 
-    private void sendFolder(File folder, HttpServletRequest req, HttpServletResponse resp, String path) throws IOException {
-
-        resp.setContentType("application/json; charset=UTF-8");
-
-        List<WebFile> list = new LinkedList<>();
+    private void sendFolder(File folder, HttpServletRequest req, HttpServletResponse resp, String folderPath) throws IOException, ServletException {
         File[] files = folder.listFiles();
-        JsonUtils jsonUtils = JsonUtils.getInstance();
+        StringBuilder html = new StringBuilder();
 
         if (files != null) {
             for (File file : files) {
-                String name = file.getName();
-                String url = "/explorer" + (path.equals("/") ? "" : path) + "/" + name;
-                list.add(WebFile.builder()
-                        .name(name)
-                        .url(url)
-                        .type(file.isDirectory() ? "folder" : "file")
-                        .build());
+                String fileName = file.getName();
+                String path = (folderPath.equals("/") ? "" : folderPath) + "/" + fileName;  // seriously don't ask
+                String url = "/explorer.exe" + path;
+                String type = file.isDirectory() ? "folder" : "file";
+                html.append("<a href=\"").append(url).append("\">")
+                        .append(fileName)
+                        .append("</a>")
+                        .append("<br/>");
             }
         }
 
-        resp.getWriter().print(jsonUtils.toJson(list));
+        req.setAttribute("html", html.toString());
+        // System.out.println(html);
+        req.getRequestDispatcher("/_render.explorer.exe.jsp").forward(req, resp);
     }
 
 }

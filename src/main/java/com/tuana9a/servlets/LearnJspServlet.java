@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet("/learn/jsp")
+@WebServlet("/api/learn/jsp")
 public class LearnJspServlet extends HttpServlet {
 
     @Override

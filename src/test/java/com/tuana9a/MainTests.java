@@ -9,8 +9,20 @@ public class MainTests {
 
     @Test
     public void test() {
-        LogUtils.getInstance().LOGGER.info("Hello World!");
+        LogUtils.getLogger().info("Hello World!");
         System.out.println(JsonUtils.getInstance().toJson(AppConfig.getInstance()));
+    }
+
+    public String makeUrl(String folderPath, String fileName) {
+        return "/explorer.exe" + (folderPath.equals("/") ? "" : folderPath) + "/" + fileName;
+    }
+
+    @Test
+    public void test1() {
+        System.out.println(makeUrl("/", "test"));
+        System.out.println(makeUrl("/", "test.txt"));
+        System.out.println(makeUrl("/test", "test"));
+        System.out.println(makeUrl("/test", "test.txt"));
     }
 
 }

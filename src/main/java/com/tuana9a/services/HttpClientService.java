@@ -58,7 +58,7 @@ public class HttpClientService {
                     return true;
 
                 } catch (Exception e) {
-                    LogUtils.getInstance().LOGGER.error("write failed: " + path, e);
+                    LogUtils.getLogger().error("write failed: " + path, e);
                     return false;
 
                 } finally {
@@ -67,7 +67,7 @@ public class HttpClientService {
                 }
             });
         } catch (Exception e) {
-            LogUtils.getInstance().LOGGER.error("download failed: " + url, e);
+            LogUtils.getLogger().error("download failed: " + url, e);
             return false;
         }
     }
@@ -87,7 +87,7 @@ public class HttpClientService {
             return JsonUtils.getInstance().fromJson(response.getEntity().getContent(), type);
 
         } catch (Exception e) {
-            LogUtils.getInstance().LOGGER.error("request GET failed: " + option.getUrl(), e);
+            LogUtils.getLogger().error("request GET failed: " + option.getUrl(), e);
             return null;
         }
     }
@@ -130,7 +130,7 @@ public class HttpClientService {
             return JsonUtils.getInstance().fromJson(response.getEntity().getContent(), type);
 
         } catch (Exception e) {
-            LogUtils.getInstance().LOGGER.error("request POST failed: " + option.getUrl(), e);
+            LogUtils.getLogger().error("request POST failed: " + option.getUrl(), e);
             return null;
         }
     }
@@ -173,7 +173,7 @@ public class HttpClientService {
             return JsonUtils.getInstance().fromJson(response.getEntity().getContent(), type);
 
         } catch (Exception e) {
-            LogUtils.getInstance().LOGGER.error("request PUT failed: " + option.getUrl(), e);
+            LogUtils.getLogger().error("request PUT failed: " + option.getUrl(), e);
             return null;
         }
     }
@@ -191,7 +191,7 @@ public class HttpClientService {
             return JsonUtils.getInstance().fromJson(response.getEntity().getContent(), type);
 
         } catch (Exception e) {
-            LogUtils.getInstance().LOGGER.error("request DELETE failed", e);
+            LogUtils.getLogger().error("request DELETE failed", e);
             return null;
         }
     }

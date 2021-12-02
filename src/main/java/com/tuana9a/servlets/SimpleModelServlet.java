@@ -24,7 +24,7 @@ public class SimpleModelServlet extends HttpServlet {
         try {
             result = SimpleModelDao.getInstance().findById(id);
         } catch (SQLException e) {
-            LogUtils.getInstance().LOGGER.error(this.getClass().getName(), e);
+            LogUtils.getLogger().error(this.getClass().getName(), e);
         }
         resp.setContentType("application/json; charset=utf-8");
         resp.getWriter().print(JsonUtils.getInstance().toJson(ResponseEntity.builder()
@@ -41,7 +41,7 @@ public class SimpleModelServlet extends HttpServlet {
         try {
             result = SimpleModelDao.getInstance().insert(model);
         } catch (SQLException e) {
-            LogUtils.getInstance().LOGGER.error(this.getClass().getName(), e);
+            LogUtils.getLogger().error(this.getClass().getName(), e);
         }
         resp.setContentType("application/json; charset=utf-8");
         resp.getWriter().print(JsonUtils.getInstance().toJson(ResponseEntity.builder()
@@ -58,7 +58,7 @@ public class SimpleModelServlet extends HttpServlet {
         try {
             result = SimpleModelDao.getInstance().update(model);
         } catch (SQLException e) {
-            LogUtils.getInstance().LOGGER.error(this.getClass().getName(), e);
+            LogUtils.getLogger().error(this.getClass().getName(), e);
         }
         resp.setContentType("application/json; charset=utf-8");
         resp.getWriter().print(JsonUtils.getInstance().toJson(ResponseEntity.builder()
@@ -75,7 +75,7 @@ public class SimpleModelServlet extends HttpServlet {
         try {
             result = SimpleModelDao.getInstance().delete(id);
         } catch (SQLException e) {
-            LogUtils.getInstance().LOGGER.error(this.getClass().getName(), e);
+            LogUtils.getLogger().error(this.getClass().getName(), e);
         }
         resp.setContentType("application/json; charset=utf-8");
         resp.getWriter().print(JsonUtils.getInstance().toJson(ResponseEntity.builder()

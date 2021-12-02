@@ -68,7 +68,7 @@ public class AppConfig {
             ROOT_FOLDER = properties.getProperty("path.upload.dir");
 
         } catch (Exception e) {
-            LogUtils.getInstance().LOGGER.error("Failed to load app-config.json", e);
+            LogUtils.getLogger().error("Failed to load app-config.json", e);
         }
         IoUtils.getInstance().close(inputStream);
     }
