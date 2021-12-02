@@ -2,6 +2,8 @@ package com.tuana9a.config;
 
 import com.tuana9a.utils.IoUtils;
 import com.tuana9a.utils.LogUtils;
+import lombok.ToString;
+import org.apache.logging.log4j.Logger;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -10,6 +12,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@ToString
 public class AppConfig {
     public String OAUTH_GOOGLE_AUTH_URL;
     public String OAUTH_GOOGLE_APP_ID;
@@ -30,6 +33,10 @@ public class AppConfig {
     public String MULTIPART_BOUNDARY = "MULTIPART_BYTERANGES";
     public String ROOT_FOLDER;
 
+    public String DATABASE_URL;
+    public String DATABASE_USERNAME;
+    public String DATABASE_PASSWORD;
+
     public Set<String> SECRETS;
 
     private AppConfig() {
@@ -44,6 +51,8 @@ public class AppConfig {
 
     public void load() {
         Properties properties = new Properties();
+        Logger logger = LogUtils.getLogger();
+        IoUtils ioUtils = IoUtils.getInstance();
         InputStream inputStream = null;
         try {
             inputStream = new FileInputStream("resource/app.conf.properties");
@@ -67,9 +76,12 @@ public class AppConfig {
 
             ROOT_FOLDER = properties.getProperty("path.upload.dir");
 
+            DATABASE_URL = properties.getProperty("database.url");
+            DATABASE_USERNAME = properties.getProperty("database.username");
+            DATABASE_PASSWORD = properties.getProperty("database.password");
         } catch (Exception e) {
-            LogUtils.getLogger().error("Failed to load app-config.json", e);
+            logger.error("Failed to load app-config.json", e);
         }
-        IoUtils.getInstance().close(inputStream);
+        ioUtils.close(inputStream);
     }
 }
