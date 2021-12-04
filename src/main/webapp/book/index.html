@@ -19,52 +19,17 @@
                 onclick="
                 let _this=this;
                 let input=_this.previousSibling;
-                setTimeout(()=> search(input.value))"
+                getBooksThenRender('/api/book?type=name&name=' + input.value);
+                "
             >
                 <span>search</span>
             </button>
         </div>
-        <div id="list" style="display: grid; grid-template-columns: repeat(5, 100px)"></div>
+        <div id="list" style="display: grid; grid-template-columns: repeat(5, min-content)"></div>
         <script>
             const listElement = document.getElementById("list");
-            function search(name = "") {
-                listElement.innerHTML = "<span>id</span><span>name</span><span>publisher</span><b></b><b></b>";
-                fetch("/api/book?type=name&name=" + name)
-                    .then((resp) => resp.json())
-                    .then((resp) => {
-                        let books = Array.from(resp.data);
-                        books.forEach((book) => {
-                            let id = document.createElement("span");
-                            id.innerText = book.id;
-                            let name = document.createElement("input");
-                            name.value = book.name;
-                            let pub = document.createElement("input");
-                            pub.value = book.publisher;
-                            let update = document.createElement("button");
-                            update.innerText = "update";
-                            let _delete = document.createElement("button");
-                            _delete.innerText = "delete";
-                            listElement.append(id, name, pub, update, _delete);
-
-                            update.addEventListener("click", () => {
-                                fetch("/api/book", {
-                                    method: "PUT",
-                                    headers: {
-                                        "Content-Type": "application/json; charset=utf-8;",
-                                    },
-                                    body: JSON.stringify({ id: id.innerText, name: name.value, publisher: pub.value }),
-                                });
-                            });
-                            _delete.addEventListener("click", () => {
-                                fetch("/api/book?id=" + id.innerText, {
-                                    method: "DELETE",
-                                });
-                            });
-                        });
-                    });
-            }
-            function main() {
-                fetch("/api/book?type=all")
+            function getBooksThenRender(url) {
+                fetch(url)
                     .then((resp) => resp.json())
                     .then((resp) => {
                         let books = Array.from(resp.data);
@@ -99,7 +64,7 @@
                         });
                     });
             }
-            main();
+            getBooksThenRender("/api/book?type=all");
         </script>
     </body>
 </html>

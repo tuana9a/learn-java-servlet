@@ -57,7 +57,7 @@ public class MainTests {
 
         ExecutorService executorService = Executors.newFixedThreadPool(8);
         Future<?> t1 = executorService.submit(() -> dao.findAll().forEach(System.out::println));
-        Future<?> t2 = executorService.submit(() -> dao.update(new Book(1, "book1", "pub1")));
+        Future<?> t2 = executorService.submit(() -> dao.update(new Book(1L, "book1", "pub1")));
         Future<?> t3 = executorService.submit(() -> System.out.println(dao.findByName("book1")));
 //        executorService.submit(() -> dao.delete(0));
         t1.get();

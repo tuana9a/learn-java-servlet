@@ -29,7 +29,7 @@ public class BookDao {
         SessionFactory factory = databaseClient.getSessionFactory();
         Session session = factory.openSession();
 
-        List<Book> books = session.createQuery("FROM Book", Book.class).list();
+        List<Book> books = session.createQuery("SELECT b FROM Book b", Book.class).list();
         session.close();
 
         return books;
@@ -41,7 +41,6 @@ public class BookDao {
         Session session = factory.openSession();
 
         String sql = "SELECT b FROM Book b WHERE b.name='" + name + "'";
-        System.out.println(sql);
         List<Book> books = session.createQuery(sql, Book.class).list();
         session.close();
 
