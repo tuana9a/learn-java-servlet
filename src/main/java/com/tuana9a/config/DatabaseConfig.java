@@ -7,6 +7,7 @@ import lombok.*;
 @Builder
 @ToString
 @NoArgsConstructor
+@AllArgsConstructor
 public class DatabaseConfig {
     private String url;
     private String username;

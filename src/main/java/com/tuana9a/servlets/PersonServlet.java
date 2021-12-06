@@ -1,8 +1,8 @@
 package com.tuana9a.servlets;
 
-import com.tuana9a.dao.SimpleModelDao;
+import com.tuana9a.dao.PersonDao;
 import com.tuana9a.models.ResponseEntity;
-import com.tuana9a.models.SimpleModel;
+import com.tuana9a.models.Person;
 import com.tuana9a.utils.JsonUtils;
 import com.tuana9a.utils.LogUtils;
 
@@ -14,16 +14,16 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet(value = "/api/simple")
-public class SimpleModelServlet extends HttpServlet {
+@WebServlet(value = "/api/person")
+public class PersonServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int id = Integer.parseInt(req.getParameter("id"));
-        SimpleModel result = null;
+        Person result = null;
         try {
-            result = SimpleModelDao.getInstance().findById(id);
-        } catch (SQLException e) {
+            result = PersonDao.getInstance().findById(id);
+        } catch (Exception e) {
             LogUtils.getLogger().error(this.getClass().getName(), e);
         }
         resp.setContentType("application/json; charset=utf-8");
@@ -36,11 +36,11 @@ public class SimpleModelServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        SimpleModel model = JsonUtils.getInstance().fromJson(req.getReader(), SimpleModel.class);
-        SimpleModel result = null;
+        Person person = JsonUtils.getInstance().fromJson(req.getReader(), Person.class);
+        Person result = null;
         try {
-            result = SimpleModelDao.getInstance().insert(model);
-        } catch (SQLException e) {
+            result = PersonDao.getInstance().insert(person);
+        } catch (Exception e) {
             LogUtils.getLogger().error(this.getClass().getName(), e);
         }
         resp.setContentType("application/json; charset=utf-8");
@@ -53,10 +53,10 @@ public class SimpleModelServlet extends HttpServlet {
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        SimpleModel model = JsonUtils.getInstance().fromJson(req.getReader(), SimpleModel.class);
+        Person model = JsonUtils.getInstance().fromJson(req.getReader(), Person.class);
         Boolean result = null;
         try {
-            result = SimpleModelDao.getInstance().update(model);
+            result = PersonDao.getInstance().update(model);
         } catch (SQLException e) {
             LogUtils.getLogger().error(this.getClass().getName(), e);
         }
@@ -73,7 +73,7 @@ public class SimpleModelServlet extends HttpServlet {
         int id = Integer.parseInt(req.getParameter("id"));
         Boolean result = null;
         try {
-            result = SimpleModelDao.getInstance().delete(id);
+            result = PersonDao.getInstance().delete(id);
         } catch (SQLException e) {
             LogUtils.getLogger().error(this.getClass().getName(), e);
         }

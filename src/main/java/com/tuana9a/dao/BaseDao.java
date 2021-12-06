@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public abstract class BaseDao<T> {
@@ -20,58 +21,51 @@ public abstract class BaseDao<T> {
     }
 
 
-    protected PreparedStatement prepare(String sql) throws SQLException {
+    protected PreparedStatement doPrepare(String sql) throws SQLException {
         return DatabaseClient.getInstance()
                 .getConnection()
                 .prepareStatement(sql, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
     }
 
-    protected T getObject(ResultSet rs) {
-        try {
-            Field[] fields = type.getDeclaredFields();
-            T object = type.newInstance();
-            for (Field f : fields) {
-                f.setAccessible(true);
-                f.set(object, rs.getObject(Utils.getInstance().camelToSnake(f.getName())));
-            }
-            return object;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+    protected T getObject(ResultSet rs) throws InstantiationException, IllegalAccessException, SQLException {
+        Field[] fields = type.getDeclaredFields();
+        Utils utils = Utils.getInstance();
+        T object = type.newInstance();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            String fieldSnakeCase = utils.camelToSnake(field.getName());
+            field.set(object, rs.getObject(fieldSnakeCase));
         }
+        return object;
     }
 
-    public List<T> getList(ResultSet rs) {
-        List<T> data = new ArrayList<>();
-        try {
-            while (rs.next()) {
-                data.add(getObject(rs));
-            }
-        } catch (SQLException e) {
-            //do nothing
+    public List<T> getList(ResultSet rs) throws SQLException, InstantiationException, IllegalAccessException {
+        List<T> data = new LinkedList<>();
+        while (rs.next()) {
+            data.add(getObject(rs));
         }
         return data;
     }
 
-    public T findById(Integer id) throws SQLException {
+    public T findById(Integer id) throws SQLException, InstantiationException, IllegalAccessException {
         String sql = "SELECT * FROM " + table + " WHERE id = ? AND deleted = false";
-        PreparedStatement prepared = prepare(sql);
+        PreparedStatement prepared = doPrepare(sql);
         prepared.setInt(1, id);
         ResultSet rs = prepared.executeQuery();
         rs.first();
         return getObject(rs);
     }
 
-    public List<T> findAll() throws SQLException {
-        String sql = "SELECT * FROM product." + table + " WHERE deleted = false";
-        PreparedStatement prepared = prepare(sql);
+    public List<T> findAll() throws SQLException, InstantiationException, IllegalAccessException {
+        String sql = "SELECT * FROM " + table + " WHERE deleted = false";
+        PreparedStatement prepared = doPrepare(sql);
         ResultSet rs = prepared.executeQuery();
         return getList(rs);
     }
 
-    public T findBy(String field, String value) throws SQLException {
+    public T findBy(String field, String value) throws SQLException, InstantiationException, IllegalAccessException {
         String sql = "SELECT * FROM " + table + " WHERE " + field + " = ? AND deleted = false";
-        PreparedStatement prepared = prepare(sql);
+        PreparedStatement prepared = doPrepare(sql);
         prepared.setObject(1, value);
         ResultSet rs = prepared.executeQuery();
         rs.first();
@@ -82,22 +76,26 @@ public abstract class BaseDao<T> {
         return null;
     }
 
-    public T insert(T object) throws SQLException {
+    public T insert(T object) throws SQLException, InstantiationException, IllegalAccessException {
         PreparedStatement prepared;
         Field[] fields = type.getDeclaredFields();
         int fieldNumber = fields.length;
+        Utils utils = Utils.getInstance();
 
         StringBuilder sql = new StringBuilder("INSERT INTO " + table + "(");
+        // create column names
         for (int i = 1; i < fieldNumber; i++) {
-            Field f = fields[i];
-            sql.append(Utils.getInstance().camelToSnake(f.getName())).append(i != fieldNumber - 1 ? "," : ") VALUES(");
+            Field field = fields[i];
+            String fieldSnakeCase = utils.camelToSnake(field.getName());
+            sql.append(fieldSnakeCase).append(i != fieldNumber - 1 ? "," : ") VALUES(");
         }
+        // append values to sql queries
         for (int i = 1; i < fieldNumber; i++) {
             Field f = fields[i];
             sql.append(i != fieldNumber - 1 ? "?," : "?)");
         }
 
-        prepared = prepare(String.valueOf(sql));
+        prepared = doPrepare(String.valueOf(sql));
         try {
             for (int i = 1; i < fieldNumber; i++) {
                 Field f = fields[i];
@@ -112,7 +110,7 @@ public abstract class BaseDao<T> {
         int count = prepared.executeUpdate();
         if (count == 1) {
             // find the new record
-            PreparedStatement prepare1 = prepare("SELECT * FROM " + table);
+            PreparedStatement prepare1 = doPrepare("SELECT * FROM " + table);
             ResultSet rs = prepare1.executeQuery();
             rs.last();
             return getObject(rs);
@@ -133,7 +131,7 @@ public abstract class BaseDao<T> {
         }
         sql.append(" WHERE ").append(Utils.getInstance().camelToSnake(fields[0].getName())).append(" = ?");//id field
 
-        prepared = prepare(String.valueOf(sql));
+        prepared = doPrepare(String.valueOf(sql));
         try {
             for (int i = 1; i < fieldNumber; i++) {
                 Field f = fields[i];
@@ -154,7 +152,7 @@ public abstract class BaseDao<T> {
 
     public boolean delete(Integer id) throws SQLException {
         String sql = "DELETE FROM " + table + " WHERE id = ? LIMIT 1";
-        PreparedStatement prepared = prepare(sql);
+        PreparedStatement prepared = doPrepare(sql);
         prepared.setInt(1, id);
         int count = prepared.executeUpdate();
         return count == 1;

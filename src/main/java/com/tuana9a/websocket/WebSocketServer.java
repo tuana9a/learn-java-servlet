@@ -1,7 +1,6 @@
 package com.tuana9a.websocket;
 
 import com.google.gson.JsonObject;
-import com.tuana9a.services.WebSocketManager;
 import com.tuana9a.utils.IoUtils;
 import com.tuana9a.utils.JsonUtils;
 import com.tuana9a.utils.LogUtils;

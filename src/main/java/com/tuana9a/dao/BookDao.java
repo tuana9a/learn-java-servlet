@@ -47,6 +47,18 @@ public class BookDao {
         return books;
     }
 
+    public Book findById(long id) {
+        HBDatabaseClient databaseClient = HBDatabaseClient.getInstance();
+        SessionFactory factory = databaseClient.getSessionFactory();
+        Session session = factory.openSession();
+
+        String sql = "SELECT b FROM Book b WHERE b.id='" + id + "'";
+        Book book = session.createQuery(sql, Book.class).getSingleResult();
+        session.close();
+
+        return book;
+    }
+
     public void update(Book newBook) {
         HBDatabaseClient databaseClient = HBDatabaseClient.getInstance();
         SessionFactory factory = databaseClient.getSessionFactory();
@@ -92,4 +104,6 @@ public class BookDao {
             session.close();
         }
     }
+
+
 }

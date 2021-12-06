@@ -1,14 +1,10 @@
 package com.tuana9a.servlets;
 
 import com.tuana9a.dao.BookDao;
-import com.tuana9a.dao.SimpleModelDao;
 import com.tuana9a.models.Book;
 import com.tuana9a.models.ResponseEntity;
-import com.tuana9a.models.SimpleModel;
 import com.tuana9a.utils.JsonUtils;
-import com.tuana9a.utils.LogUtils;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;

@@ -1,6 +1,4 @@
-package com.tuana9a.services;
-
-import com.tuana9a.websocket.WebSocketServer;
+package com.tuana9a.websocket;
 
 import javax.websocket.Session;
 import java.io.IOException;
@@ -10,7 +8,7 @@ public class WebSocketManager {
     private static final WebSocketManager instance = new WebSocketManager();
     private final Hashtable<String, Session> sessions = new Hashtable<>();
 
-    public WebSocketManager() {
+    private WebSocketManager() {
 
     }
 
@@ -19,16 +17,12 @@ public class WebSocketManager {
     }
 
     public void putSession(Session session) {
-        if (session == null) {
-            return;
-        }
+        if (session == null) return;
         sessions.put(session.getId(), session);
     }
 
     public void removeSession(Session session) {
-        if (session == null) {
-            return;
-        }
+        if (session == null) return;
         sessions.remove(session.getId());
     }
 
