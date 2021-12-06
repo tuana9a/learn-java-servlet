@@ -19,9 +19,15 @@ public class HBDatabaseClient {
         return instance;
     }
 
-    public SessionFactory createSessionFactory(List<String> mapResources) throws SQLException {
+    public SessionFactory createSessionFactory(List<String> mapResources) {
         Configuration cfg = new Configuration();
         mapResources.forEach(cfg::addResource);
+        sessionFactory = cfg.configure().buildSessionFactory();
+        return sessionFactory;
+    }
+
+    public SessionFactory createSessionFactory() {
+        Configuration cfg = new Configuration();
         sessionFactory = cfg.configure().buildSessionFactory();
         return sessionFactory;
     }

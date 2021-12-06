@@ -1,12 +1,12 @@
 package com.tuana9a.config;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
+@Setter
 @Builder
 @ToString
+@NoArgsConstructor
 public class DatabaseConfig {
     private String url;
     private String username;
