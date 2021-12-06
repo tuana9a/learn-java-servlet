@@ -32,7 +32,4 @@ public class DatabaseClient {
         return connection;
     }
 
-    public void closeConnection() throws SQLException {
-        connection.close();
-    }
 }

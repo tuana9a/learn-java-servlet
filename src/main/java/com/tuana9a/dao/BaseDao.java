@@ -1,150 +1,133 @@
 package com.tuana9a.dao;
 
+import com.tuana9a.config.AppConfig;
 import com.tuana9a.database.DatabaseClient;
 import com.tuana9a.utils.Utils;
 
+import javax.rmi.CORBA.Util;
 import java.lang.reflect.Field;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public abstract class BaseDao<T> {
     protected String table;
-    protected Class<T> type;
+    protected Class<T> _class;
 
-    public BaseDao(String table, Class<T> type) {
+    public BaseDao(String table, Class<T> _class) {
         this.table = table;
-        this.type = type;
+        this._class = _class;
     }
 
 
-    protected PreparedStatement doPrepare(String sql) throws SQLException {
-        return DatabaseClient.getInstance()
-                .getConnection()
-                .prepareStatement(sql, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+    protected PreparedStatement createPrepared(String sql) throws SQLException {
+        // return getConnection().prepareStatement(sql, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+        return getConnection().prepareStatement(sql);
     }
 
-    protected T getObject(ResultSet rs) throws InstantiationException, IllegalAccessException, SQLException {
-        Field[] fields = type.getDeclaredFields();
-        Utils utils = Utils.getInstance();
-        T object = type.newInstance();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            String fieldSnakeCase = utils.camelToSnake(field.getName());
-            field.set(object, rs.getObject(fieldSnakeCase));
-        }
-        return object;
-    }
-
-    public List<T> getList(ResultSet rs) throws SQLException, InstantiationException, IllegalAccessException {
-        List<T> data = new LinkedList<>();
-        while (rs.next()) {
-            data.add(getObject(rs));
-        }
-        return data;
-    }
-
-    public T findById(Integer id) throws SQLException, InstantiationException, IllegalAccessException {
-        String sql = "SELECT * FROM " + table + " WHERE id = ? AND deleted = false";
-        PreparedStatement prepared = doPrepare(sql);
-        prepared.setInt(1, id);
-        ResultSet rs = prepared.executeQuery();
-        rs.first();
-        return getObject(rs);
+    protected Connection getConnection() {
+        DatabaseClient databaseClient = DatabaseClient.getInstance();
+        return databaseClient.getConnection();
     }
 
     public List<T> findAll() throws SQLException, InstantiationException, IllegalAccessException {
+        Utils utils = Utils.getInstance();
         String sql = "SELECT * FROM " + table + " WHERE deleted = false";
-        PreparedStatement prepared = doPrepare(sql);
+        PreparedStatement prepared = createPrepared(sql);
         ResultSet rs = prepared.executeQuery();
-        return getList(rs);
+        return utils.getList(rs, _class);
+    }
+
+    public T findById(Long id) throws SQLException, InstantiationException, IllegalAccessException {
+        Utils utils = Utils.getInstance();
+        AppConfig config = AppConfig.getInstance();
+        String sql = "SELECT * FROM " + table + " WHERE id = ? AND deleted = false";
+        if (config.SHOW_SQL) System.out.println(sql);
+        PreparedStatement prepared = createPrepared(sql);
+        prepared.setLong(1, id);
+        ResultSet rs = prepared.executeQuery();
+        if (!rs.next()) return null;
+        return utils.getObject(rs, _class);
     }
 
     public T findBy(String field, String value) throws SQLException, InstantiationException, IllegalAccessException {
+        Utils utils = Utils.getInstance();
         String sql = "SELECT * FROM " + table + " WHERE " + field + " = ? AND deleted = false";
-        PreparedStatement prepared = doPrepare(sql);
+        PreparedStatement prepared = createPrepared(sql);
         prepared.setObject(1, value);
         ResultSet rs = prepared.executeQuery();
-        rs.first();
-        return getObject(rs);
+        if (!rs.next()) return null;
+        return utils.getObject(rs, _class);
     }
 
     public List<T> sortBy(String field, boolean asc) {
         return null;
     }
 
-    public T insert(T object) throws SQLException, InstantiationException, IllegalAccessException {
+    public boolean insert(T object) throws SQLException, InstantiationException, IllegalAccessException {
         PreparedStatement prepared;
-        Field[] fields = type.getDeclaredFields();
-        int fieldNumber = fields.length;
+        Field[] fields = _class.getDeclaredFields();
+        int fieldCount = fields.length;
         Utils utils = Utils.getInstance();
+        AppConfig config = AppConfig.getInstance();
 
         StringBuilder sql = new StringBuilder("INSERT INTO " + table + "(");
         // create column names
-        for (int i = 1; i < fieldNumber; i++) {
+        for (int i = 0; i < fieldCount; i++) {
             Field field = fields[i];
             String fieldSnakeCase = utils.camelToSnake(field.getName());
-            sql.append(fieldSnakeCase).append(i != fieldNumber - 1 ? "," : ") VALUES(");
+            sql.append(fieldSnakeCase).append(i != fieldCount - 1 ? "," : ")");
         }
         // append values to sql queries
-        for (int i = 1; i < fieldNumber; i++) {
-            Field f = fields[i];
-            sql.append(i != fieldNumber - 1 ? "?," : "?)");
+        sql.append("VALUES(");
+        for (int i = 0; i < fieldCount; i++) {
+            Field field = fields[i];
+            sql.append(i != fieldCount - 1 ? "?," : "?)");
         }
 
-        prepared = doPrepare(String.valueOf(sql));
-        try {
-            for (int i = 1; i < fieldNumber; i++) {
-                Field f = fields[i];
-                f.setAccessible(true);
-                prepared.setObject(i, f.get(object));
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            return null;
+        if (config.SHOW_SQL) System.out.println(sql);
+        prepared = createPrepared(sql.toString());
+        for (int i = 0; i < fieldCount; i++) {
+            Field f = fields[i];
+            f.setAccessible(true);
+            prepared.setObject(i + 1, f.get(object));
         }
 
         int count = prepared.executeUpdate();
-        if (count == 1) {
-            // find the new record
-            PreparedStatement prepare1 = doPrepare("SELECT * FROM " + table);
-            ResultSet rs = prepare1.executeQuery();
-            rs.last();
-            return getObject(rs);
-        } else {
-            return null;
-        }
+        return count == 1;
     }
 
-    public boolean update(T object) throws SQLException {
+    public boolean update(T object) throws SQLException, IllegalAccessException {
         PreparedStatement prepared;
-        Field[] fields = type.getDeclaredFields();
-        int fieldNumber = fields.length;
+        Field[] fields = _class.getDeclaredFields();
+        int fieldCount = fields.length;
+        AppConfig config = AppConfig.getInstance();
+        Utils utils = Utils.getInstance();
 
         StringBuilder sql = new StringBuilder("UPDATE " + table + " SET ");
-        for (int i = 1; i < fieldNumber; i++) {
+        for (int i = 1; i < fieldCount; i++) {
             Field f = fields[i];
-            sql.append(Utils.getInstance().camelToSnake(f.getName())).append(i != fieldNumber - 1 ? " = ?, " : " = ? ");
+            String fieldSnakeCase = utils.camelToSnake(f.getName());
+            sql.append(fieldSnakeCase).append(i != fieldCount - 1 ? " = ?, " : " = ? ");
         }
-        sql.append(" WHERE ").append(Utils.getInstance().camelToSnake(fields[0].getName())).append(" = ?");//id field
+        sql.append(" WHERE ");
+        String idFieldName = utils.camelToSnake(fields[0].getName());
+        sql.append(idFieldName);
+        sql.append(" = ?");
 
-        prepared = doPrepare(String.valueOf(sql));
-        try {
-            for (int i = 1; i < fieldNumber; i++) {
-                Field f = fields[i];
-                f.setAccessible(true);
-                prepared.setObject(i, f.get(object));
-            }
-            Field f = fields[0];//id field
+        if (config.SHOW_SQL) System.out.println(sql);
+        prepared = createPrepared(sql.toString());
+
+        for (int i = 1; i < fieldCount; i++) {
+            Field f = fields[i];
             f.setAccessible(true);
-            prepared.setObject(fieldNumber, f.get(object));
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            return false;
+            prepared.setObject(i, f.get(object));
         }
+        Field idField = fields[0];//id field
+        idField.setAccessible(true);
+        prepared.setObject(fieldCount, idField.get(object));
 
         int count = prepared.executeUpdate();
         return count == 1;
@@ -152,7 +135,7 @@ public abstract class BaseDao<T> {
 
     public boolean delete(Integer id) throws SQLException {
         String sql = "DELETE FROM " + table + " WHERE id = ? LIMIT 1";
-        PreparedStatement prepared = doPrepare(sql);
+        PreparedStatement prepared = createPrepared(sql);
         prepared.setInt(1, id);
         int count = prepared.executeUpdate();
         return count == 1;

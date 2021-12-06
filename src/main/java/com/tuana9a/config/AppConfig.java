@@ -39,6 +39,8 @@ public class AppConfig {
 
     public Set<String> SECRETS;
 
+    public boolean SHOW_SQL = true;
+
     private AppConfig() {
 
     }

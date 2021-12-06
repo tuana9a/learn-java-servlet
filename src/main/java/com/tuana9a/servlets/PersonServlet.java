@@ -19,7 +19,7 @@ public class PersonServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int id = Integer.parseInt(req.getParameter("id"));
+        long id = Long.parseLong(req.getParameter("id"));
         Person result = null;
         try {
             result = PersonDao.getInstance().findById(id);
@@ -37,9 +37,9 @@ public class PersonServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Person person = JsonUtils.getInstance().fromJson(req.getReader(), Person.class);
-        Person result = null;
+        boolean success = false;
         try {
-            result = PersonDao.getInstance().insert(person);
+            success = PersonDao.getInstance().insert(person);
         } catch (Exception e) {
             LogUtils.getLogger().error(this.getClass().getName(), e);
         }
@@ -47,7 +47,7 @@ public class PersonServlet extends HttpServlet {
         resp.getWriter().print(JsonUtils.getInstance().toJson(ResponseEntity.builder()
                 .code(1)
                 .message("post success")
-                .data(result)
+                .data(success)
                 .build()));
     }
 
@@ -57,7 +57,7 @@ public class PersonServlet extends HttpServlet {
         Boolean result = null;
         try {
             result = PersonDao.getInstance().update(model);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             LogUtils.getLogger().error(this.getClass().getName(), e);
         }
         resp.setContentType("application/json; charset=utf-8");
