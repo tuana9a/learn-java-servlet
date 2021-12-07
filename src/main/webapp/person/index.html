@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Person</title>
+    </head>
+    <body>
+        <div id="list" style="display: grid; grid-template-columns: repeat(6, min-content); grid-gap: 5px"></div>
+        <script>
+            const listElement = document.getElementById("list");
+            function getPersonsThenRender(url) {
+                fetch(url)
+                    .then((resp) => resp.json())
+                    .then((resp) => {
+                        let persons = Array.from(resp.data);
+                        listElement.innerHTML = "<b>id</b><b>username</b><b>age</b><b>deleted</b><b></b><b></b>";
+                        persons.forEach((person) => {
+                            let id = document.createElement("span");
+                            id.innerText = person.id;
+
+                            let name = document.createElement("input");
+                            name.setAttribute("type", "text");
+                            name.value = person.name;
+
+                            let age = document.createElement("input");
+                            age.setAttribute("type", "number");
+                            age.value = person.age;
+
+                            let deleted = document.createElement("input");
+                            deleted.setAttribute("type", "checkbox");
+                            age.checked = person.deleted;
+
+                            let updateButton = document.createElement("button");
+                            updateButton.innerText = "update";
+                            updateButton.onclick = () => {
+                                fetch("/api/person", {
+                                    method: "PUT",
+                                    headers: {
+                                        "Content-Type": "application/json; charset=utf-8;",
+                                    },
+                                    body: JSON.stringify({
+                                        id: id.innerText,
+                                        name: name.value,
+                                        age: age.value,
+                                        deleted: deleted.checked,
+                                    }),
+                                });
+                            };
+
+                            let deleteButton = document.createElement("button");
+                            deleteButton.innerText = "delete";
+                            deleteButton.onclick = () => {
+                                fetch("/api/person?id=" + id.innerText, {
+                                    method: "DELETE",
+                                });
+                            };
+
+                            listElement.append(id, name, age, deleted, updateButton, deleteButton);
+                        });
+                        let id = document.createElement("input");
+                        id.setAttribute("type", "number");
+
+                        let name = document.createElement("input");
+                        name.setAttribute("type", "text");
+
+                        let age = document.createElement("input");
+                        age.setAttribute("type", "number");
+
+                        let deleted = document.createElement("input");
+                        deleted.setAttribute("type", "checkbox");
+
+                        let insertButton = document.createElement("button");
+                        insertButton.innerText = "insert";
+                        insertButton.addEventListener("click", () => {
+                            fetch("/api/person", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json; charset=utf-8;",
+                                },
+                                body: JSON.stringify({
+                                    id: id.value,
+                                    name: name.value,
+                                    age: age.value,
+                                    deleted: deleted.checked,
+                                }),
+                            });
+                        });
+
+                        listElement.append(id, name, age, deleted, insertButton, document.createElement("i"));
+                    });
+            }
+            getPersonsThenRender("/api/person");
+        </script>
+    </body>
+</html>

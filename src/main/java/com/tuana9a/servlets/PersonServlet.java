@@ -19,26 +19,30 @@ public class PersonServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        long id = Long.parseLong(req.getParameter("id"));
-        Person result = null;
+        Object result = null;
         try {
-            result = PersonDao.getInstance().findById(id);
+            String id = req.getParameter("id");
+            if (id == null) {
+                result = PersonDao.getInstance().findAll();
+            } else {
+                result = PersonDao.getInstance().findById(Long.parseLong(id));
+            }
         } catch (Exception e) {
             LogUtils.getLogger().error(this.getClass().getName(), e);
         }
         resp.setContentType("application/json; charset=utf-8");
         resp.getWriter().print(JsonUtils.getInstance().toJson(ResponseEntity.builder()
                 .code(1)
-                .message("get success")
+                .message("get")
                 .data(result)
                 .build()));
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Person person = JsonUtils.getInstance().fromJson(req.getReader(), Person.class);
         boolean success = false;
         try {
+            Person person = JsonUtils.getInstance().fromJson(req.getReader(), Person.class);
             success = PersonDao.getInstance().insert(person);
         } catch (Exception e) {
             LogUtils.getLogger().error(this.getClass().getName(), e);
@@ -46,16 +50,16 @@ public class PersonServlet extends HttpServlet {
         resp.setContentType("application/json; charset=utf-8");
         resp.getWriter().print(JsonUtils.getInstance().toJson(ResponseEntity.builder()
                 .code(1)
-                .message("post success")
+                .message("post")
                 .data(success)
                 .build()));
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Person model = JsonUtils.getInstance().fromJson(req.getReader(), Person.class);
         Boolean result = null;
         try {
+            Person model = JsonUtils.getInstance().fromJson(req.getReader(), Person.class);
             result = PersonDao.getInstance().update(model);
         } catch (Exception e) {
             LogUtils.getLogger().error(this.getClass().getName(), e);
@@ -63,16 +67,16 @@ public class PersonServlet extends HttpServlet {
         resp.setContentType("application/json; charset=utf-8");
         resp.getWriter().print(JsonUtils.getInstance().toJson(ResponseEntity.builder()
                 .code(1)
-                .message("put success")
+                .message("put")
                 .data(result)
                 .build()));
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int id = Integer.parseInt(req.getParameter("id"));
         Boolean result = null;
         try {
+            int id = Integer.parseInt(req.getParameter("id"));
             result = PersonDao.getInstance().delete(id);
         } catch (SQLException e) {
             LogUtils.getLogger().error(this.getClass().getName(), e);
@@ -80,7 +84,7 @@ public class PersonServlet extends HttpServlet {
         resp.setContentType("application/json; charset=utf-8");
         resp.getWriter().print(JsonUtils.getInstance().toJson(ResponseEntity.builder()
                 .code(1)
-                .message("delete success")
+                .message("delete")
                 .data(result)
                 .build()));
     }

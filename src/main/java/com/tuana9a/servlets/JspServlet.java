@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet("/api/learn/jsp")
-public class LearnJspServlet extends HttpServlet {
+@WebServlet("/api/jsp")
+public class JspServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -23,7 +23,7 @@ public class LearnJspServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getParameter("username");
         req.setAttribute("welcome", "Welcome " + username + " !");
-        RequestDispatcher requestDispatcher = req.getRequestDispatcher("/learn/jsp/post.jsp");
+        RequestDispatcher requestDispatcher = req.getRequestDispatcher("/jsp/welcome.jsp");
         requestDispatcher.forward(req, resp);
     }
 }
