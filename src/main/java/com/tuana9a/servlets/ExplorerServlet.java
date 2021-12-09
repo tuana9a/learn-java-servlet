@@ -318,20 +318,27 @@ public class ExplorerServlet extends HttpServlet {
         }
     }
 
-    private void sendFolder(File folder, HttpServletRequest req, HttpServletResponse resp, String folderPath) throws IOException, ServletException {
+    private void sendFolder(File folder, HttpServletRequest req, HttpServletResponse resp, String parentPath)
+            throws IOException, ServletException {
         File[] files = folder.listFiles();
         StringBuilder html = new StringBuilder();
 
         if (files != null) {
             for (File file : files) {
                 String fileName = file.getName();
-                String path = (folderPath.equals("/") ? "" : folderPath) + "/" + fileName;  // seriously don't ask
+                String path;
+                // seriously don't ask
+                if (parentPath.equals("/")) {
+                    path = "/" + fileName;
+                } else if (parentPath.endsWith("/")) {
+                    path = parentPath + fileName;
+                } else {
+                    path = parentPath + "/" + fileName;
+                }
                 String url = "/explorer.exe" + path;
-                String type = file.isDirectory() ? "folder" : "file";
-                html.append("<a href=\"").append(url).append("\">")
-                        .append(fileName)
-                        .append("</a>")
-                        .append("<br/>");
+                String type = file.isDirectory() ? "d" : "f";
+                String a = "<a href=\"" + url + "\" data-type=\"" + type + "\">" + fileName + "</a><br/>";
+                html.append(a);
             }
         }
 
