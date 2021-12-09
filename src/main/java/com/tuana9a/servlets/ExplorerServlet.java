@@ -325,20 +325,21 @@ public class ExplorerServlet extends HttpServlet {
             throws IOException, ServletException {
         File[] files = folder.listFiles();
         StringBuilder html = new StringBuilder();
-        AppConfig config =AppConfig.getInstance();
+        AppConfig config = AppConfig.getInstance();
 
-        String parentDir = "<a href=\"./..\">..</a><br/>";
+        String fontSize = "<style> a { font-size: 20px; text-decoration: none; }</style>";
+        html.append(fontSize);
+
+        String parentDir;
+        if (!parentPath.endsWith("/")) {
+            parentPath += "/";
+        }
+        parentDir = "<a href=\"" + config.EXPLORER_PREFIX + parentPath + ".." + "\">..</a><br/>";
         html.append(parentDir);
         if (files != null) {
             for (File file : files) {
                 String fileName = file.getName();
-                String path;
-                // seriously don't ask
-                if (parentPath.endsWith("/")) {
-                    path = parentPath + fileName;
-                } else {
-                    path = parentPath + "/" + fileName;
-                }
+                String path = parentPath + fileName;
                 String url = config.EXPLORER_PREFIX + path;
                 String type = file.isDirectory() ? "d" : "f";
                 String a = "<a href=\"" + url + "\" data-type=\"" + type + "\">" + fileName + "</a><br/>";
