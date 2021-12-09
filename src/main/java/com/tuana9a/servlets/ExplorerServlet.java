@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
-@WebServlet(urlPatterns = {"/explorer.exe/*"})
+@WebServlet(urlPatterns = {"/explorer/*"})
 @MultipartConfig(maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 5 * 5) // 5mb || 5 * 5mb
 public class ExplorerServlet extends HttpServlet {
 
@@ -52,13 +52,16 @@ public class ExplorerServlet extends HttpServlet {
 
         if (file.isDirectory()) {
             sendFolder(file, req, resp, pathRequest);
-        } else if (file.isFile()) {
-            sendFile(file, req, resp);
-        } else {
-            // unknown what is this file
-            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            return;
         }
 
+        if (file.isFile()) {
+            sendFile(file, req, resp);
+            return;
+        }
+
+        // unknown what is this file
+        resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
 
     @Override
@@ -322,20 +325,21 @@ public class ExplorerServlet extends HttpServlet {
             throws IOException, ServletException {
         File[] files = folder.listFiles();
         StringBuilder html = new StringBuilder();
+        AppConfig config =AppConfig.getInstance();
 
+        String parentDir = "<a href=\"./..\">..</a><br/>";
+        html.append(parentDir);
         if (files != null) {
             for (File file : files) {
                 String fileName = file.getName();
                 String path;
                 // seriously don't ask
-                if (parentPath.equals("/")) {
-                    path = "/" + fileName;
-                } else if (parentPath.endsWith("/")) {
+                if (parentPath.endsWith("/")) {
                     path = parentPath + fileName;
                 } else {
                     path = parentPath + "/" + fileName;
                 }
-                String url = "/explorer.exe" + path;
+                String url = config.EXPLORER_PREFIX + path;
                 String type = file.isDirectory() ? "d" : "f";
                 String a = "<a href=\"" + url + "\" data-type=\"" + type + "\">" + fileName + "</a><br/>";
                 html.append(a);
@@ -344,7 +348,7 @@ public class ExplorerServlet extends HttpServlet {
 
         req.setAttribute("html", html.toString());
         // System.out.println(html);
-        req.getRequestDispatcher("/_render.explorer.exe.jsp").forward(req, resp);
+        req.getRequestDispatcher("/_render.explorer.jsp").forward(req, resp);
     }
 
 }

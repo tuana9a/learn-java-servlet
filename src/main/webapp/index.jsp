@@ -14,7 +14,7 @@
     <body>
         <h1>welcome</h1>
         <h3><b>Time: <% out.println(new java.util.Date()); %></b></h3>
-        <a href="./explorer.exe/">/explorer.exe</a><br />
+        <a href="./explorer/">/explorer/</a><br />
         <a href="./book">/book</a><br />
         <a href="./person">/person</a><br />
         <a href="./jsp">/jsp</a><br />

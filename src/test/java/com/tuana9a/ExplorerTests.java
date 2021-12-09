@@ -1,10 +1,12 @@
 package com.tuana9a;
 
+import com.tuana9a.config.AppConfig;
 import org.junit.Test;
 
-public class ExplorerExeTests {
+public class ExplorerTests {
     public String makeUrl(String folderPath, String fileName) {
-        return "/explorer.exe" + (folderPath.equals("/") ? "" : folderPath) + "/" + fileName;
+        AppConfig config = AppConfig.getInstance();
+        return config.EXPLORER_PREFIX + (folderPath.equals("/") ? "" : folderPath) + "/" + fileName;
     }
 
     @Test

@@ -41,6 +41,8 @@ public class AppConfig {
 
     public boolean SHOW_SQL = true;
 
+    public String EXPLORER_PREFIX = "/explorer";
+
     private AppConfig() {
 
     }
