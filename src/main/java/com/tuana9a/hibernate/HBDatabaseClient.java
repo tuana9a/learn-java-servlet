@@ -3,7 +3,10 @@ package com.tuana9a.hibernate;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
+import java.io.File;
 import java.util.List;
+
+import com.tuana9a.config.AppConfig;
 
 public class HBDatabaseClient {
     private static final HBDatabaseClient instance = new HBDatabaseClient();
@@ -26,11 +29,13 @@ public class HBDatabaseClient {
     }
 
     public SessionFactory createSessionFactory() {
+        AppConfig config = AppConfig.getInstance();
+        System.out.println(config);
         Configuration cfg = new Configuration();
-        sessionFactory = cfg.configure().buildSessionFactory();
+        cfg.addResource(config.properties.getProperty("hibernate.mappers.Book"));
+        sessionFactory = cfg.configure(new File(config.HIBERNATE_CONFIG_PATH())).buildSessionFactory();
         return sessionFactory;
     }
-
 
     public SessionFactory getSessionFactory() {
         return sessionFactory;

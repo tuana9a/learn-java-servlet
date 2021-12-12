@@ -19,12 +19,12 @@ public class JwtUtils {
     }
 
     public String createToken(String username) {
-        AppConfig appConfig = AppConfig.getInstance();
-        Date expire = new Date(System.currentTimeMillis() + Long.parseLong(appConfig.SECURITY_JWT_EXPIRE));
+        AppConfig config = AppConfig.getInstance();
+        Date expire = new Date(System.currentTimeMillis() + Long.parseLong(config.SECURITY_JWT_EXPIRE()));
         return JWT.create()
                 .withSubject(username)
                 .withExpiresAt(expire)
-                .sign(Algorithm.HMAC512(appConfig.SECURITY_JWT_SECRET));
+                .sign(Algorithm.HMAC512(config.SECURITY_JWT_SECRET()));
     }
 
     public String decodeToken(String token) {
@@ -32,8 +32,8 @@ public class JwtUtils {
             return null;
         }
         try {
-            AppConfig appConfig = AppConfig.getInstance();
-            return JWT.require(Algorithm.HMAC512(appConfig.SECURITY_JWT_SECRET))
+            AppConfig config = AppConfig.getInstance();
+            return JWT.require(Algorithm.HMAC512(config.SECURITY_JWT_SECRET()))
                     .build()
                     .verify(token)
                     .getSubject();

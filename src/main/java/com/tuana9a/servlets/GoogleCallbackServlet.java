@@ -29,14 +29,9 @@ public class GoogleCallbackServlet extends HttpServlet {
         } catch (Exception ignored) {
         }
 
-        if (!AppConfig.getInstance().SECRETS.contains(username)) {
-            resp.sendRedirect("/?login_success=false");
-            return;
-        }
-
         Cookie cookie = new Cookie("auth", JwtUtils.getInstance().createToken(username));
         cookie.setPath("/");
-        cookie.setMaxAge(Integer.parseInt(AppConfig.getInstance().SECURITY_COOKIE_EXPIRE));
+        cookie.setMaxAge(Integer.parseInt(AppConfig.getInstance().SECURITY_COOKIE_EXPIRE()));
 
         resp.addCookie(cookie);
         resp.sendRedirect("/?login_success=true");

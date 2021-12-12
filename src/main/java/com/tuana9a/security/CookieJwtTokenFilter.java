@@ -35,7 +35,7 @@ public class CookieJwtTokenFilter implements Filter {
             }
         }
         response.setContentType("text/html; charset=utf-8");
-        response.getWriter().print(AppConfig.getInstance().SECURITY_REJECT_MESSAGE);
+        response.getWriter().print(AppConfig.getInstance().SECURITY_REJECT_MESSAGE());
     }
 
     @Override

@@ -28,4 +28,3 @@ target/*
 resource/
 .jpb/
 .vscode/*
-src/main/resources/*

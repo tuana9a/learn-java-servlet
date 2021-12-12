@@ -41,7 +41,7 @@ public class ExplorerServlet extends HttpServlet {
         // URL-decode the file name (might contain spaces and on) and prepare file object.
         String pathDecoded = URLDecoder.decode(pathRequest, "UTF-8");
         // System.out.println(pathDecoded);
-        File file = new File(config.ROOT_FOLDER, pathDecoded);
+        File file = new File(config.ROOT_FOLDER(), pathDecoded);
 
         // Check if file actually exists in filesystem.
         if (!file.exists()) {
@@ -79,7 +79,7 @@ public class ExplorerServlet extends HttpServlet {
         }
 
         // URL-decode the file name (might contain spaces and on) and prepare file object.
-        File file = new File(config.ROOT_FOLDER, URLDecoder.decode(requestedFile, "UTF-8"));
+        File file = new File(config.ROOT_FOLDER(), URLDecoder.decode(requestedFile, "UTF-8"));
 
         Part filePart = req.getPart("file");
         if (filePart == null) {

@@ -21,9 +21,9 @@ public class ContextListener implements ServletContextListener {
             config.load();
 
             DatabaseConfig databaseConfig = new DatabaseConfig();
-            databaseConfig.setUrl(config.DATABASE_URL);
-            databaseConfig.setUsername(config.DATABASE_USERNAME);
-            databaseConfig.setPassword(config.DATABASE_PASSWORD);
+            databaseConfig.setUrl(config.DATABASE_URL());
+            databaseConfig.setUsername(config.DATABASE_USERNAME());
+            databaseConfig.setPassword(config.DATABASE_PASSWORD());
 
             DatabaseClient.getInstance().createConnection(databaseConfig);
             HBDatabaseClient.getInstance().createSessionFactory();
