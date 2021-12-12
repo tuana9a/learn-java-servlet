@@ -3,7 +3,6 @@ package com.tuana9a.hibernate;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class HBDatabaseClient {

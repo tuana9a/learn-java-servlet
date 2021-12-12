@@ -5,7 +5,6 @@ import com.tuana9a.context.ServletContextManager;
 import com.tuana9a.utils.IoUtils;
 import com.tuana9a.utils.JsonUtils;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;

@@ -1,6 +1,5 @@
 package com.tuana9a;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.tuana9a.config.AppConfig;
 import com.tuana9a.config.DatabaseConfig;
 import com.tuana9a.dao.PersonDao;

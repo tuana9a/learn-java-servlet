@@ -33,6 +33,7 @@ public class WebSocketServer {
     public void onMessage(Session session, String message) {
         try {
             JsonObject object = JsonUtils.getInstance().fromJson(message, JsonObject.class);
+            System.out.println(object);
         } catch (Exception ignored) {
         }
     }

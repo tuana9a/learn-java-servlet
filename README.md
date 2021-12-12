@@ -1,7 +1,9 @@
 # info
 
-hibernate config file can be found in templates folder
+hibernate config file and mapper can be found in `templates` folder
 
-you need to put it in src/main/resources/hibernate.cfg.xml
+then you need to put it in `src/main/resources/`
 
-then build the project to make it work properly
+for example `src/main/resources/hibernate.cfg.xml` and `src/main/resources/Book.hbm.xml`
+
+then build (package) the project to make it work properly

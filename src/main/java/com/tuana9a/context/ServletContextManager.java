@@ -1,7 +1,6 @@
 package com.tuana9a.context;
 
 import javax.servlet.ServletContext;
-import java.io.File;
 
 public class ServletContextManager {
     private ServletContext context;

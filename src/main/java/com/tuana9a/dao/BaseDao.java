@@ -4,7 +4,6 @@ import com.tuana9a.config.AppConfig;
 import com.tuana9a.database.DatabaseClient;
 import com.tuana9a.utils.Utils;
 
-import javax.rmi.CORBA.Util;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -83,7 +82,7 @@ public abstract class BaseDao<T> {
         // append values to sql queries
         sql.append("VALUES(");
         for (int i = 0; i < fieldCount; i++) {
-            Field field = fields[i];
+            // Field field = fields[i];
             sql.append(i != fieldCount - 1 ? "?," : "?)");
         }
 
