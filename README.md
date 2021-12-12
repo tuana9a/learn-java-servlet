@@ -2,8 +2,8 @@
 
 hibernate config file and mapper can be found in `templates` folder
 
-then you need to put it in `src/main/resources/`
+then you need to put it in `resource/` create if not exists
 
-for example `src/main/resources/hibernate.cfg.xml` and `src/main/resources/Book.hbm.xml`
+for example `resource/hibernate.cfg.xml`
 
-then build (package) the project to make it work properly
+package the project with `mvn package` then run by start script
