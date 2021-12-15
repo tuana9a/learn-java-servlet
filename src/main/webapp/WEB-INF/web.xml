@@ -1,7 +1,33 @@
-<!DOCTYPE web-app PUBLIC
- "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
- "http://java.sun.com/dtd/web-app_2_3.dtd" >
-
-<web-app>
-  <display-name>Archetype Created Web Application</display-name>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+    <display-name>Learn Java Servlet</display-name>
+    <context-param>
+        <param-name>driver</param-name>
+        <param-value>com.mysql.cj.jdbc.Driver</param-value>
+    </context-param>
+    <servlet>
+        <!-- represents the servlet -->
+        <description>Jsp Servlet Example</description>
+        <display-name>Jsp Servlet</display-name>
+        <servlet-name>JspServlet</servlet-name>
+        <servlet-class>com.tuana9a.servlets.JspServlet</servlet-class>
+        <init-param>
+            <param-name>girl</param-name>
+            <param-value>gemdino</param-value>
+        </init-param>
+        <init-param>
+            <param-name>name</param-name>
+            <param-value>tuana9a</param-value>
+        </init-param>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>JspServlet</servlet-name>
+        <url-pattern>/api/servlets/jsp</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>JspServlet</servlet-name>
+        <url-pattern>/api/welcome</url-pattern>
+    </servlet-mapping>
 </web-app>

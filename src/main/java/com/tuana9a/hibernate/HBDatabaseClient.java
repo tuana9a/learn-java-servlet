@@ -30,7 +30,6 @@ public class HBDatabaseClient {
 
     public SessionFactory createSessionFactory() {
         AppConfig config = AppConfig.getInstance();
-        System.out.println(config);
         Configuration cfg = new Configuration();
         cfg.addResource(config.properties.getProperty("hibernate.mappers.Book"));
         sessionFactory = cfg.configure(new File(config.HIBERNATE_CONFIG_PATH())).buildSessionFactory();

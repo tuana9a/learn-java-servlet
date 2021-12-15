@@ -1,7 +1,6 @@
 package com.tuana9a.servlets;
 
 import com.tuana9a.models.ResponseEntity;
-import com.tuana9a.context.ServletContextManager;
 import com.tuana9a.utils.IoUtils;
 import com.tuana9a.utils.JsonUtils;
 
@@ -21,13 +20,12 @@ public class FileUploadServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Part filePart = req.getPart("file");
         IoUtils ioUtils = IoUtils.getInstance();
-        ServletContextManager contextManager = ServletContextManager.getInstance();
 
         if (filePart == null) {
             return;
         }
 
-        String uploadPath = contextManager.getContext().getRealPath(filePart.getSubmittedFileName());
+        String uploadPath = this.getServletContext().getRealPath(filePart.getSubmittedFileName());
 
         InputStream inputStream = null;
         OutputStream outputStream = null;

@@ -5,6 +5,7 @@ import com.tuana9a.config.DatabaseConfig;
 import com.tuana9a.database.DatabaseClient;
 import com.tuana9a.hibernate.HBDatabaseClient;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
@@ -16,11 +17,14 @@ public class ContextListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent event) {
         try {
-            ServletContextManager.getInstance().setContext(event.getServletContext());
-            AppConfig config = AppConfig.getInstance();
-            config.load();
+            System.out.println("=== " + this.getClass().getName() + " ===");
+            ServletContext context = event.getServletContext();
+            String driver = context.getInitParameter("driver");
+            System.out.println("driver=" + driver);
 
+            AppConfig.getInstance().load();
             DatabaseConfig databaseConfig = new DatabaseConfig();
+            AppConfig config = AppConfig.getInstance();
             databaseConfig.setUrl(config.DATABASE_URL());
             databaseConfig.setUsername(config.DATABASE_USERNAME());
             databaseConfig.setPassword(config.DATABASE_PASSWORD());
