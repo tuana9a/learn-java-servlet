@@ -1,8 +1,5 @@
 package com.tuana9a.servlets;
 
-import com.tuana9a.utils.LogUtils;
-import org.apache.logging.log4j.Logger;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
