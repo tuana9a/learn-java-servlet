@@ -16,7 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import java.io.*;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
@@ -346,7 +348,9 @@ public class ExplorerServlet extends HttpServlet {
                 html.append(a);
             }
         }
-
+        String randomCode = Base64.getEncoder().encodeToString(parentPath.getBytes(StandardCharsets.UTF_8));
+        String randomIcon = "\"https://avatars.dicebear.com/api/identicon/" + randomCode + ".svg\"";
+        req.setAttribute("random", randomIcon);
         req.setAttribute("html", html.toString());
         // System.out.println(html);
         req.getRequestDispatcher("/_render.explorer.jsp").forward(req, resp);

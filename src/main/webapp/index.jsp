@@ -17,6 +17,6 @@
         <a href="./explorer/">/explorer/</a><br />
         <a href="./book">/book</a><br />
         <a href="./person">/person</a><br />
-        <a href="./jsp">/jsp</a><br />
+        <a href="./jsp.jsp">/jsp</a><br />
     </body>
 </html>

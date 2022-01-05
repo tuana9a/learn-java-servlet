@@ -58,7 +58,7 @@ public class AppConfig {
     };
 
     public String ROOT_FOLDER() {
-        return properties.getProperty("path.upload.dir");
+        return properties.getProperty("path.root");
     };
 
     public String DATABASE_URL() {
