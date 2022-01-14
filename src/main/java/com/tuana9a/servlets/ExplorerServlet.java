@@ -22,32 +22,36 @@ import java.util.Base64;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
-@WebServlet(urlPatterns = {"/explorer/*"})
+@WebServlet(urlPatterns = { "/explorer/*" })
 @MultipartConfig(maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 5 * 5) // 5mb || 5 * 5mb
 public class ExplorerServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        //SECTION: Validate request file ------------------------------------------------------------------
+        // SECTION: Validate request file
+        // ------------------------------------------------------------------
         String pathRequest = req.getPathInfo();
         AppConfig config = AppConfig.getInstance();
 
         // Check if file is actually supplied to the request URL.
         if (pathRequest == null) {
-            // Throw an exception, or send 404, or show default/warning page, or just ignore it.
+            // Throw an exception, or send 404, or show default/warning page, or just ignore
+            // it.
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
 
-        // URL-decode the file name (might contain spaces and on) and prepare file object.
+        // URL-decode the file name (might contain spaces and on) and prepare file
+        // object.
         String pathDecoded = URLDecoder.decode(pathRequest, "UTF-8");
         // System.out.println(pathDecoded);
         File file = new File(config.ROOT_FOLDER(), pathDecoded);
 
         // Check if file actually exists in filesystem.
         if (!file.exists()) {
-            // Throw an exception, or send 404, or show default/warning page, or just ignore it.
+            // Throw an exception, or send 404, or show default/warning page, or just ignore
+            // it.
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
@@ -75,12 +79,14 @@ public class ExplorerServlet extends HttpServlet {
 
         // Check if file is actually supplied to the request URL.
         if (requestedFile == null) {
-            // Throw an exception, or send 404, or show default/warning page, or just ignore it.
+            // Throw an exception, or send 404, or show default/warning page, or just ignore
+            // it.
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
-        // URL-decode the file name (might contain spaces and on) and prepare file object.
+        // URL-decode the file name (might contain spaces and on) and prepare file
+        // object.
         File file = new File(config.ROOT_FOLDER(), URLDecoder.decode(requestedFile, "UTF-8"));
 
         Part filePart = req.getPart("file");
@@ -110,7 +116,6 @@ public class ExplorerServlet extends HttpServlet {
             ioUtils.close(outputStream);
         }
 
-
         resp.sendError(HttpServletResponse.SC_OK);
     }
 
@@ -126,8 +131,8 @@ public class ExplorerServlet extends HttpServlet {
         String eTag = fileName + "_" + length + "_" + lastModified;
         long expires = System.currentTimeMillis() + config.DEFAULT_EXPIRE_TIME;
 
-
-        //SECTION: Validate request headers for caching ---------------------------------------------------
+        // SECTION: Validate request headers for caching
+        // ---------------------------------------------------
 
         String ifNoneMatch = req.getHeader("If-None-Match");
         // If-None-Match header should contain "*" or ETag. If so, then return 304.
@@ -139,17 +144,18 @@ public class ExplorerServlet extends HttpServlet {
         }
 
         long ifModifiedSince = req.getDateHeader("If-Modified-Since");
-        // If-Modified-Since header should be greater than LastModified. If so, then return 304.
+        // If-Modified-Since header should be greater than LastModified. If so, then
+        // return 304.
         if (ifNoneMatch == null && ifModifiedSince != -1 && ifModifiedSince + 1000 > lastModified) {
-            //EXPLAIN: This header is ignored if any If-None-Match header is specified.
+            // EXPLAIN: This header is ignored if any If-None-Match header is specified.
             resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
             resp.setHeader("ETag", eTag); // Required in 304.
             resp.setDateHeader("Expires", expires); // Postpone cache with 1 week.
             return;
         }
 
-
-        //SECTION: Validate request headers for resume ----------------------------------------------------
+        // SECTION: Validate request headers for resume
+        // ----------------------------------------------------
 
         String ifMatch = req.getHeader("If-Match");
         // If-Match header should contain "*" or ETag. If not, then return 412.
@@ -158,15 +164,16 @@ public class ExplorerServlet extends HttpServlet {
             return;
         }
 
-        // If-Unmodified-Since header should be greater than LastModified. If not, then return 412.
+        // If-Unmodified-Since header should be greater than LastModified. If not, then
+        // return 412.
         long ifUnmodifiedSince = req.getDateHeader("If-Unmodified-Since");
         if (ifUnmodifiedSince != -1 && ifUnmodifiedSince + 1000 <= lastModified) {
             resp.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
             return;
         }
 
-
-        //SECTION: Validate and process range -------------------------------------------------------------
+        // SECTION: Validate and process range
+        // -------------------------------------------------------------
 
         Range full = new Range(0, length - 1, length);// The full Range represents the complete file.
         List<Range> ranges = new ArrayList<>();
@@ -174,7 +181,8 @@ public class ExplorerServlet extends HttpServlet {
         // Validate and process Range and If-Range headers.
         String range = req.getHeader("Range");
         if (range != null) {
-            // Range header should match format "bytes=n-n,n-n,n-n...". If not, then return 416.
+            // Range header should match format "bytes=n-n,n-n,n-n...". If not, then return
+            // 416.
             if (!range.matches("^bytes=\\d*-\\d*(,\\d*-\\d*)*$")) {
                 resp.setHeader("Content-Range", "bytes */" + length); // Required in 416.
                 resp.sendError(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
@@ -182,7 +190,8 @@ public class ExplorerServlet extends HttpServlet {
             }
 
             String ifRange = req.getHeader("If-Range");
-            // If-Range header should either match ETag or be greater then LastModified. If not, return full file.
+            // If-Range header should either match ETag or be greater then LastModified. If
+            // not, return full file.
             if (ifRange != null && !ifRange.equals(eTag)) {
                 try {
                     long ifRangeTime = req.getDateHeader("If-Range"); // Throws IAE if invalid.
@@ -197,7 +206,7 @@ public class ExplorerServlet extends HttpServlet {
             // If any valid If-Range header, then process each part of byte range.
             if (ranges.isEmpty()) {
                 for (String part : range.substring(6).split(",")) {
-                    //file length = 100, 50-80 (50 to 80), 40- (40 to 100), -20 (80 to 100).
+                    // file length = 100, 50-80 (50 to 80), 40- (40 to 100), -20 (80 to 100).
                     long start = utils.getLongFromString(part, 0, part.indexOf("-"));
                     long end = utils.getLongFromString(part, part.indexOf("-") + 1, part.length());
 
@@ -221,12 +230,12 @@ public class ExplorerServlet extends HttpServlet {
             }
         }
 
-
-        //SECTION: Prepare and initialize response --------------------------------------------------------
+        // SECTION: Prepare and initialize response
+        // --------------------------------------------------------
 
         String contentType = getServletContext().getMimeType(fileName);
-        boolean acceptsGzip = false;    //set default GZIP support and
-        String disposition = "inline";  //set default content disposition.
+        boolean acceptsGzip = false; // set default GZIP support and
+        String disposition = "inline"; // set default content disposition.
 
         // If content type is unknown, then set the default value.
         if (contentType == null) {
@@ -238,27 +247,28 @@ public class ExplorerServlet extends HttpServlet {
         if (contentType.startsWith("text")) {
             String acceptEncoding = req.getHeader("Accept-Encoding");
             acceptsGzip = acceptEncoding != null && httpUtils.checkHeaderAccept(acceptEncoding, "gzip");
-            //expand content type with the one and right character encoding.
+            // expand content type with the one and right character encoding.
             contentType += ";charset=UTF-8";
         }
-        // Else If content type is supported by the browser, then set to inline, else attachment
+        // Else If content type is supported by the browser, then set to inline, else
+        // attachment
         else if (!contentType.startsWith("image")) {
-            //EXPLAIN: expect for images, default supported by browser.
+            // EXPLAIN: expect for images, default supported by browser.
             String accept = req.getHeader("Accept");
             disposition = accept != null && httpUtils.checkHeaderAccept(accept, contentType) ? "inline" : "attachment";
         }
 
         // Initialize response.
         resp.reset();
-        //        resp.setBufferSize(Config._4MB_BUFFER_SIZE);
+        // resp.setBufferSize(Config._4MB_BUFFER_SIZE);
         resp.setHeader("Content-Disposition", disposition + ";filename=\"" + fileName + "\"");
         resp.setHeader("Accept-Ranges", "bytes");
         resp.setHeader("ETag", eTag);
         resp.setDateHeader("Last-Modified", lastModified);
         resp.setDateHeader("Expires", expires);
 
-
-        //SECTION: Send requested file (part(s)) to client ------------------------------------------------
+        // SECTION: Send requested file (part(s)) to client
+        // ------------------------------------------------
 
         RandomAccessFile input = null;
         OutputStream output = null;
@@ -349,8 +359,9 @@ public class ExplorerServlet extends HttpServlet {
             }
         }
         String randomCode = Base64.getEncoder().encodeToString(parentPath.getBytes(StandardCharsets.UTF_8));
-        String randomIcon = "\"https://avatars.dicebear.com/api/identicon/" + randomCode + ".svg\"";
-        req.setAttribute("random", randomIcon);
+        String randomIcon = "<link rel=\"shortcut icon\" href=\"https://avatars.dicebear.com/api/identicon/"
+                + randomCode + ".svg\" type=\"image/x-icon\" />";
+        req.setAttribute("randomIcon", randomIcon);
         req.setAttribute("html", html.toString());
         // System.out.println(html);
         req.getRequestDispatcher("/_render.explorer.jsp").forward(req, resp);
