@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-    <class name="com.tuana9a.learnjavaservlet.models.Book" table="book">
+    <class name="com.tuana9a.learn.java.servlet.models.Book" table="book">
         <id name="id" type="long" column="id" />
         <property name="name" column="name" type="string" />
         <property name="publisher" column="publisher" type="string" />

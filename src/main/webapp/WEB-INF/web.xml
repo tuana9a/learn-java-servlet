@@ -11,7 +11,7 @@ http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
         <description>Jsp Servlet Example</description>
         <display-name>Jsp Servlet</display-name>
         <servlet-name>JspServlet</servlet-name>
-        <servlet-class>com.tuana9a.learnjavaservlet.servlets.JspServlet</servlet-class>
+        <servlet-class>com.tuana9a.learn.java.servlet.servlets.JspServlet</servlet-class>
         <init-param>
             <param-name>girl</param-name>
             <param-value>gemdino</param-value>
