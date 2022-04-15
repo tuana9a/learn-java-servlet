@@ -36,11 +36,11 @@ public class Utils {
         return (substring.length() > 0) ? Long.parseLong(substring) : -1;
     }
 
-    public <T> T getObject(ResultSet rs, Class<T> _class)
+    public <T> T getObject(ResultSet rs, Class<T> classs)
             throws InstantiationException, IllegalAccessException, SQLException {
-        Field[] fields = _class.getDeclaredFields();
+        Field[] fields = classs.getDeclaredFields();
         Utils utils = Utils.getInstance();
-        T object = _class.newInstance();
+        T object = classs.newInstance();
         for (Field field : fields) {
             field.setAccessible(true);
             String fieldSnakeCase = utils.camelToSnake(field.getName());

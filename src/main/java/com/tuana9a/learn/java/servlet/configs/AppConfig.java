@@ -1,4 +1,4 @@
-package com.tuana9a.learn.java.servlet.config;
+package com.tuana9a.learn.java.servlet.configs;
 
 import com.tuana9a.learn.java.servlet.utils.IoUtils;
 import com.tuana9a.learn.java.servlet.utils.LogUtils;
@@ -31,61 +31,69 @@ public class AppConfig {
 
     public String OAUTH_GOOGLE_GET_TOKEN_URL() {
         return properties.getProperty("oauth.google.get_token_url");
-    };
+    }
+
+    ;
 
     public String OAUTH_GOOGLE_GET_USER_INFO_URL() {
         return properties.getProperty("oauth.google.get_user_info_url");
-    };
+    }
+
+    ;
 
     public String OAUTH_GOOGLE_REDIRECT_URL() {
         return properties.getProperty("oauth.google.redirect_url");
-    };
+    }
+
+    ;
 
     public String SECURITY_JWT_SECRET() {
         return properties.getProperty("security.jwt.secret");
-    };
+    }
+
+    ;
 
     public String SECURITY_JWT_EXPIRE() {
         return properties.getProperty("security.jwt.expire");
-    };
+    }
+
+    ;
 
     public String SECURITY_COOKIE_EXPIRE() {
         return properties.getProperty("security.cookie.expire");
-    };
+    }
+
+    ;
 
     public String SECURITY_REJECT_MESSAGE() {
         return properties.getProperty("security.reject_message");
-    };
+    }
 
-    public String ROOT_FOLDER() {
-        return properties.getProperty("path.root");
-    };
+    ;;
 
     public String DATABASE_URL() {
         return properties.getProperty("database.url");
-    };
+    }
+
+    ;
 
     public String DATABASE_USERNAME() {
         return properties.getProperty("database.username");
-    };
+    }
+
+    ;
 
     public String DATABASE_PASSWORD() {
         return properties.getProperty("database.password");
-    };
+    }
 
-    public String HIBERNATE_CONFIG_PATH() {
-        return properties.getProperty("hibernate.conf");
-    };
+    ;
 
     public Set<String> SECRETS;
 
     public boolean SHOW_SQL = true;
 
     public int BUFFER_SIZE = 1024; // 1KB
-    public long DEFAULT_EXPIRE_TIME = 604800000L; // 1 weeks
-    public String MULTIPART_BOUNDARY = "MULTIPART_BYTERANGES";
-
-    public String EXPLORER_PREFIX = "/explorer";
 
     private AppConfig() {
 
@@ -102,12 +110,13 @@ public class AppConfig {
         Logger logger = LogUtils.getLogger();
         IoUtils ioUtils = IoUtils.getInstance();
         InputStream inputStream = null;
+        String configPath = "application.properties";
         try {
-            inputStream = new FileInputStream("resource/app.conf.properties");
+            inputStream = new FileInputStream(configPath);
             properties.load(inputStream);
             SECRETS = Arrays.stream(properties.getProperty("security.secrets").split(",")).collect(Collectors.toSet());
         } catch (Exception e) {
-            logger.error("Failed to load app-config.json", e);
+            logger.error("Failed to load " + configPath, e);
         }
         ioUtils.close(inputStream);
     }

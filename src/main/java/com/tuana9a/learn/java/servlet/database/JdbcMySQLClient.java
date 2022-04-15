@@ -1,21 +1,19 @@
-package com.tuana9a.learn.java.servlet.jdbc;
-
-import com.tuana9a.learn.java.servlet.config.DatabaseConfig;
+package com.tuana9a.learn.java.servlet.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class MySQLClient {
+public class JdbcMySQLClient {
     private Connection connection;
 
-    private static final MySQLClient instance = new MySQLClient();
+    private static final JdbcMySQLClient instance = new JdbcMySQLClient();
 
-    private MySQLClient() {
+    private JdbcMySQLClient() {
 
     }
 
-    public static MySQLClient getInstance() {
+    public static JdbcMySQLClient getInstance() {
         return instance;
     }
 
@@ -27,10 +25,6 @@ public class MySQLClient {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public Connection createConnection(DatabaseConfig option) {
-        return this.createConnection(option.getUrl(), option.getUsername(), option.getPassword());
     }
 
     public Connection getConnection() {

@@ -1,7 +1,7 @@
 package com.tuana9a.learn.java.servlet.dao;
 
-import com.tuana9a.learn.java.servlet.config.AppConfig;
-import com.tuana9a.learn.java.servlet.jdbc.MySQLClient;
+import com.tuana9a.learn.java.servlet.configs.AppConfig;
+import com.tuana9a.learn.java.servlet.database.JdbcMySQLClient;
 import com.tuana9a.learn.java.servlet.utils.Utils;
 
 import java.lang.reflect.Field;
@@ -27,7 +27,7 @@ public abstract class BaseDao<T> {
     }
 
     protected Connection getConnection() {
-        MySQLClient mySQLClient = MySQLClient.getInstance();
+        JdbcMySQLClient mySQLClient = JdbcMySQLClient.getInstance();
         return mySQLClient.getConnection();
     }
 

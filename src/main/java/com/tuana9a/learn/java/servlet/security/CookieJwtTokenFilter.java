@@ -1,6 +1,6 @@
 package com.tuana9a.learn.java.servlet.security;
 
-import com.tuana9a.learn.java.servlet.config.AppConfig;
+import com.tuana9a.learn.java.servlet.configs.AppConfig;
 import com.tuana9a.learn.java.servlet.utils.JwtUtils;
 
 import javax.servlet.*;

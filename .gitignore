@@ -20,11 +20,8 @@ cmake-build-*/
 *.iws
 
 # IntelliJ
-.idea/*
 out/*
 target/*
 
 # tuana9a custom
-resource/
-.jpb/
-.vscode/*
+application.properties

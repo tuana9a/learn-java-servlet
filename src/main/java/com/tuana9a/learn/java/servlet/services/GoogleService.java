@@ -1,7 +1,7 @@
 package com.tuana9a.learn.java.servlet.services;
 
 import com.google.gson.JsonObject;
-import com.tuana9a.learn.java.servlet.config.AppConfig;
+import com.tuana9a.learn.java.servlet.configs.AppConfig;
 import com.tuana9a.learn.java.servlet.models.HttpRequestOption;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;

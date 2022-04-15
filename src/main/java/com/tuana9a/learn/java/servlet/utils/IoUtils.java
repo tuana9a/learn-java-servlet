@@ -1,6 +1,6 @@
 package com.tuana9a.learn.java.servlet.utils;
 
-import com.tuana9a.learn.java.servlet.config.AppConfig;
+import com.tuana9a.learn.java.servlet.configs.AppConfig;
 
 import java.io.*;
 

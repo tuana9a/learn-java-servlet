@@ -1,9 +1,18 @@
 # info
 
-hibernate config file and mapper can be found in `templates` folder
+my learning java serlvet
 
-then you need to put it in `resource/` create if not exists
+# how to run
 
-for example `resource/hibernate.cfg.xml`
+take example files and remove `.example` from it
 
-package the project with `mvn package` then run by start script
+```shell
+# package
+mvn package
+```
+
+```shell
+# run
+PORT=8080
+java -jar target/dependency/webapp-runner.jar --port $PORT target/*.war
+```

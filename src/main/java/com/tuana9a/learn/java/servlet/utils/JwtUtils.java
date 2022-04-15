@@ -2,7 +2,7 @@ package com.tuana9a.learn.java.servlet.utils;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.tuana9a.learn.java.servlet.config.AppConfig;
+import com.tuana9a.learn.java.servlet.configs.AppConfig;
 
 import java.util.Date;
 

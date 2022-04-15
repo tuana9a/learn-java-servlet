@@ -2,7 +2,7 @@ package com.tuana9a.learn.java.servlet.servlets;
 
 import com.google.gson.JsonObject;
 import com.tuana9a.learn.java.servlet.services.GoogleService;
-import com.tuana9a.learn.java.servlet.config.AppConfig;
+import com.tuana9a.learn.java.servlet.configs.AppConfig;
 import com.tuana9a.learn.java.servlet.utils.JwtUtils;
 
 import javax.servlet.ServletException;
