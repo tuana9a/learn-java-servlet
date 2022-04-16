@@ -1,7 +1,9 @@
 package com.tuana9a.learn.java.servlet.context;
 
+import com.tuana9a.learn.java.servlet.background.SyncClock;
 import com.tuana9a.learn.java.servlet.database.JdbcMySQLClient;
 import com.tuana9a.learn.java.servlet.configs.AppConfig;
+import com.tuana9a.learn.java.servlet.services.BackgroundService;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -17,11 +19,10 @@ public class ContextListener implements ServletContextListener {
         System.out.println(this.getClass().getName() + " is loading servlet context");
         AppConfig config = AppConfig.getInstance();
         config.load();
-        Executor executor = Executors.newFixedThreadPool(8);
-        executor.execute(() -> {
-            JdbcMySQLClient mySQLClient = JdbcMySQLClient.getInstance();
-            mySQLClient.createConnection(config.DATABASE_URL(), config.DATABASE_USERNAME(), config.DATABASE_PASSWORD());
-        });
+        BackgroundService backgroundService = BackgroundService.getInstance();
+        JdbcMySQLClient mySQLClient = JdbcMySQLClient.getInstance();
+        backgroundService.execute(() -> mySQLClient.createConnection(config.DATABASE_URL(), config.DATABASE_USERNAME(), config.DATABASE_PASSWORD()));
+        backgroundService.execute(new SyncClock());
     }
 
     @Override

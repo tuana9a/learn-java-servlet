@@ -14,8 +14,10 @@
     <body>
         <h1>welcome</h1>
         <h3><b>Time: <% out.println(new java.util.Date()); %></b></h3>
+        <p>websocket: <span style="font-size: 30px" class="Clock"></span></p>
         <p><a href="./chat/">chat</a></p>
         <p><a href="./person/">person</a></p>
         <p><a href="./jsp.jsp">jsp</a></p>
+        <script src="./sync-clock.js"></script>
     </body>
 </html>

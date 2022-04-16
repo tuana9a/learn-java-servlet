@@ -16,7 +16,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class HttpRequestOption {
+public class HttpRequest {
     private String url;
     private Header[] headers;
     private JsonObject bodyJson;

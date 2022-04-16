@@ -2,7 +2,7 @@ package com.tuana9a.learn.java.servlet.services;
 
 import com.google.gson.JsonObject;
 import com.tuana9a.learn.java.servlet.configs.AppConfig;
-import com.tuana9a.learn.java.servlet.models.HttpRequestOption;
+import com.tuana9a.learn.java.servlet.models.HttpRequest;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -44,7 +44,7 @@ public class GoogleService {
         formData.add(new BasicNameValuePair("redirect_uri", config.OAUTH_GOOGLE_REDIRECT_URL()));
         formData.add(new BasicNameValuePair("grant_type", "authorization_code"));
 
-        HttpRequestOption option = HttpRequestOption.builder()
+        HttpRequest option = HttpRequest.builder()
                 .url(url)
                 .formData(formData)
                 .build();
@@ -56,7 +56,7 @@ public class GoogleService {
     public JsonObject getUserInfo(String accessToken) {
         AppConfig appConfig = AppConfig.getInstance();
         String url = appConfig.OAUTH_GOOGLE_GET_USER_INFO_URL() + accessToken;
-        return httpClientService.get(HttpRequestOption.builder().url(url).build());
+        return httpClientService.get(HttpRequest.builder().url(url).build());
     }
 
 }

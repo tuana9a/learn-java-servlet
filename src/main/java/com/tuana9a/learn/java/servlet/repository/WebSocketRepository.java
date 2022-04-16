@@ -1,20 +1,21 @@
-package com.tuana9a.learn.java.servlet.services;
+package com.tuana9a.learn.java.servlet.repository;
 
 import com.tuana9a.learn.java.servlet.utils.IoUtils;
 
 import javax.websocket.Session;
 import java.io.IOException;
 import java.util.Hashtable;
+import java.util.Set;
 
-public class ChatService {
-    private static final ChatService instance = new ChatService();
+public class WebSocketRepository {
+    private static final WebSocketRepository instance = new WebSocketRepository();
     private final Hashtable<String, Session> sessions = new Hashtable<>();
 
-    private ChatService() {
+    private WebSocketRepository() {
 
     }
 
-    public static ChatService getInstance() {
+    public static WebSocketRepository getInstance() {
         return instance;
     }
 
@@ -27,6 +28,10 @@ public class ChatService {
         if (session == null) return;
         sessions.remove(session.getId());
         IoUtils.getInstance().close(session);
+    }
+
+    public Set<String> getSessionIds() {
+        return sessions.keySet();
     }
 
     public void sendMessage(String sessionId, String message) {

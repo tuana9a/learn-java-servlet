@@ -1,7 +1,7 @@
 package com.tuana9a.learn.java.servlet.services;
 
 import com.google.gson.JsonObject;
-import com.tuana9a.learn.java.servlet.models.HttpRequestOption;
+import com.tuana9a.learn.java.servlet.models.HttpRequest;
 import com.tuana9a.learn.java.servlet.utils.IoUtils;
 import com.tuana9a.learn.java.servlet.utils.JsonUtils;
 import com.tuana9a.learn.java.servlet.utils.LogUtils;
@@ -74,7 +74,7 @@ public class HttpClientService {
 
 
     //SECTION: general purpose
-    public <T> T get(HttpRequestOption option, Class<T> type) {
+    public <T> T get(HttpRequest option, Class<T> type) {
         try {
             HttpGet request = new HttpGet(option.getUrl());
 
@@ -92,7 +92,7 @@ public class HttpClientService {
         }
     }
 
-    public <T> T post(HttpRequestOption option, Class<T> type) {
+    public <T> T post(HttpRequest option, Class<T> type) {
         try {
             HttpPost request = new HttpPost(option.getUrl());
 
@@ -135,7 +135,7 @@ public class HttpClientService {
         }
     }
 
-    public <T> T put(HttpRequestOption option, Class<T> type) {
+    public <T> T put(HttpRequest option, Class<T> type) {
         try {
             HttpPut request = new HttpPut(option.getUrl());
 
@@ -178,7 +178,7 @@ public class HttpClientService {
         }
     }
 
-    public <T> T delete(HttpRequestOption option, Class<T> type) {
+    public <T> T delete(HttpRequest option, Class<T> type) {
         try {
             HttpDelete request = new HttpDelete(option.getUrl());
 
@@ -198,19 +198,19 @@ public class HttpClientService {
 
 
     //SECTION: json default
-    public JsonObject get(HttpRequestOption option) {
+    public JsonObject get(HttpRequest option) {
         return get(option, JsonObject.class);
     }
 
-    public JsonObject put(HttpRequestOption option) {
+    public JsonObject put(HttpRequest option) {
         return put(option, JsonObject.class);
     }
 
-    public JsonObject post(HttpRequestOption option) {
+    public JsonObject post(HttpRequest option) {
         return post(option, JsonObject.class);
     }
 
-    public JsonObject delete(HttpRequestOption option) {
+    public JsonObject delete(HttpRequest option) {
         return delete(option, JsonObject.class);
     }
 
